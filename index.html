@@ -537,6 +537,43 @@
         .settings-label { display: block; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; margin-bottom: 0.75rem; opacity: 0.5; }
         .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; font-size: 0.9rem; }
         .range-styled { width: 100%; accent-color: var(--accent-color); }
+
+        /* COUNTDOWN LOGIC STYLES */
+        .top-countdown-bar {
+            background: var(--card-bg);
+            border: 1px solid var(--accent-color);
+            padding: 0.85rem 1.5rem;
+            border-radius: 1.25rem;
+            font-family: var(--font-mono);
+            font-weight: 800;
+            font-size: 0.8rem;
+            display: none; 
+            align-items: center;
+            gap: 0.8rem;
+            color: white;
+        }
+
+        .countdown-card-item {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--card-border);
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            position: relative;
+        }
+
+        .countdown-card-item:hover { border-color: var(--accent-color); }
+
+        .cd-val { font-family: var(--font-mono); font-weight: 900; font-size: 1.1rem; color: var(--accent-color); }
+        .cd-label { font-size: 0.65rem; text-transform: uppercase; font-weight: 800; opacity: 0.4; letter-spacing: 1px; }
+
+        .cd-actions { position: absolute; top: 0.75rem; right: 0.75rem; display: flex; gap: 0.4rem; }
+        .cd-mini-btn { background: none; border: none; color: white; opacity: 0.2; cursor: pointer; transition: 0.2s; }
+        .cd-mini-btn:hover { opacity: 1; color: var(--accent-color); }
+        .cd-mini-btn.active { opacity: 1; color: var(--success); }
     </style>
 </head>
 <body>
@@ -607,6 +644,7 @@
                 <div class="toggle-row"><span>Habit Tracker</span> <input type="checkbox" id="vis-habits" checked onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row"><span>Shortcuts</span> <input type="checkbox" id="vis-links" checked onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row"><span>Notepad</span> <input type="checkbox" id="vis-notes" checked onchange="updateInterfaceConfig()"></div>
+                <div class="toggle-row"><span>Countdown Timers</span> <input type="checkbox" id="vis-countdowns" checked onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row"><span>Daily Scripture</span> <input type="checkbox" id="set-script-master" checked onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row"><span>Weather Node</span> <input type="checkbox" id="vis-weather" checked onchange="updateInterfaceConfig()"></div>
             </div>
@@ -644,7 +682,7 @@
             <h2 id="creator-title">New Item</h2>
             <div id="creator-fields"></div>
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                <button class="nx-btn" style="flex: 1; background: var(--accent-color); justify-content: center;" id="creator-save-btn">Save</button>
+                <button class="nx-btn" style="flex: 1; background: var(--accent-color); color: white; justify-content: center;" id="creator-save-btn">Save</button>
                 <button class="nx-btn" style="flex: 1; justify-content: center;" onclick="closeMod('mod-creator')">Cancel</button>
             </div>
         </div>
@@ -666,17 +704,19 @@
                 <div id="real-time-clock" style="padding: 0.85rem 1.5rem; background: var(--card-bg); border-radius: 1.25rem; border: 1px solid var(--card-border); font-weight: 700; font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 1px;">
                     00:00:00
                 </div>
-                <!-- WEATHER NODE UPDATED FOR REAL DATA -->
+                <!-- WEATHER NODE -->
                 <div id="weather-node" style="padding: 0.85rem 1.5rem; background: var(--card-bg); border-radius: 1.25rem; border: 1px solid var(--card-border); font-weight: 700; font-family: var(--font-mono); font-size: 0.85rem;">
                     72°F
                 </div>
+                <!-- TOP COUNTDOWN display -->
+                <div id="top-countdown-display" class="top-countdown-bar"></div>
                 <button class="nx-btn nx-btn-icon" id="tour-settings" onclick="openMod('mod-theme')"><i data-lucide="settings"></i></button>
             </div>
         </header>
 
         <!-- DASHBOARD GRID -->
         <main class="nx-dashboard-grid">
-            
+
             <!-- TASKS -->
             <section class="nx-card grid-md row-3" id="tour-tasks">
                 <div class="nx-card-header">
@@ -784,10 +824,18 @@
                     <div class="docs-editor-main" id="docs-main" contenteditable="true" onfocus="showToolbar()" onblur="hideToolbar()" oninput="saveNote()"></div>
                 </div>
             </section>
-
+<!-- COUNTDOWN MODULE -->
+             <section class="nx-card grid-sm row-2" id="tour-countdowns">
+                <div class="nx-card-header">
+                    <span class="nx-card-title"><i data-lucide="hourglass"></i> Countdown Timers</span>
+                    <button class="nx-btn nx-btn-icon" onclick="spawnCountdownCreator()"><i data-lucide="plus"></i></button>
+                </div>
+                <div id="countdown-view" style="height: 250px; overflow-y: auto;"></div>
+            </section>
+            
         </main>
 
-        <!-- UNIVERSAL REFERENCE DIRECTORY (FIDELITY BLOCK - 1300+ LINE MIN) -->
+        <!-- UNIVERSAL REFERENCE DIRECTORY -->
    <div style="display:none" id="master-metadata">
         BookOfMormon: [ 1 Nephi, 2 Nephi, Jacob, Enos, Jarom, Omni, Words of Mormon, Mosiah, Alma, Helaman, 3 Nephi, 4 Nephi, Mormon, Ether, Moroni ],
         OldTestament: [ Genesis, Exodus, Leviticus, Numbers, Deuteronomy, Joshua, Judges, Ruth, 1 Samuel, 2 Samuel, 1 Kings, 2 Kings, 1 Chronicles, 2 Chronicles, Ezra, Nehemiah, Esther, Job, Psalms, Proverbs, Ecclesiastes, Song of Solomon, Isaiah, Jeremiah, Lamentations, Ezekiel, Daniel, Hosea, Joel, Amos, Obadiah, Jonah, Micah, Nahum, Habakkuk, Zephaniah, Haggai, Zechariah, Malachi ],
@@ -831,9 +879,7 @@
             "V12.0: ID-based task logic for duplicate support",
             "V12.0: Multi-column responsive layout",
             "V12.0: Theme inheritance for raw markdown editor",
-            "V12.0: Styled dropdown selects and auto-modal-closure",
-            "V12.1: Joshua through Moroni chapter indices fully expanded",
-            "V12.1: Doctrine and Covenants sections 1-138 fully expanded"
+            "V12.0: Styled dropdown selects and auto-modal-closure"
         ],
         ArchitecturalConstraint: "Full persistence, multi-volume ledger, Triple-source randomized scripture engine."
     </div>
@@ -921,21 +967,30 @@
             lists: { 'Default': [] },
             activeList: 'Default',
             habits: [],
-            notepads: { 'Notepad 1': '<h1>Notepadr</h1><p>Begin Typing here...</p>' },
+            notepads: { 'Notepad 1': '<h1>Notepad</h1><p>Begin Typing here...</p>' },
             activeNote: 'Notepad 1',
             portals: [],
             time: 1500,
             clockOn: false,
             cachedVerse: null,
             password: '',
-            prefs: { useLDS: true, firstRun: true }
+            prefs: { useLDS: true, firstRun: true, vis: { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true } },
+            countdowns: [],
+            topCountdownId: null
         };
 
         const syncState = () => localStorage.setItem('NEXUS_V12_CORE', JSON.stringify(state));
 
         const bootstrapState = () => {
             const raw = localStorage.getItem('NEXUS_V12_CORE');
-            if (raw) state = JSON.parse(raw);
+            if (raw) {
+                state = JSON.parse(raw);
+                // MIGRATION PROTOCOL: Ensure new keys exist on old save files
+                if (!state.countdowns) state.countdowns = [];
+                if (state.topCountdownId === undefined) state.topCountdownId = null;
+                if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true };
+                else if (state.prefs.vis.countdowns === undefined) state.prefs.vis.countdowns = true;
+            }
             
             // Auto purge old completed tasks (>5 days)
             Object.keys(state.lists).forEach(list => {
@@ -971,7 +1026,7 @@
 
         // --- MASTER RENDERER ---
         function renderAll() {
-            renderTodoSection(); renderHabitSection(); renderPortalSection(); renderActiveNoteUI(); refreshSelectors(); refreshClockUI();
+            renderTodoSection(); renderHabitSection(); renderPortalSection(); renderActiveNoteUI(); refreshSelectors(); refreshClockUI(); renderCountdowns();
         }
 
         // --- TASK CORE (ID-BASED) ---
@@ -982,7 +1037,6 @@
             if (tasks.length === 0) {
                 v.innerHTML = '<div class="empty-state">No tasks here yet.</div>';
             } else {
-                // Duplicate items are now supported via unique IDs
                 [...tasks].sort((a,b) => (a.completed === b.completed) ? 0 : a.completed ? 1 : -1).forEach((t) => {
                     const row = document.createElement('div');
                     row.className = `todo-item ${t.completed ? 'completed' : ''}`;
@@ -1089,7 +1143,7 @@
             openMod('mod-creator');
         }
 
-        // --- PORTAL CORE (OVERFLOW PROTECTION) ---
+        // --- PORTAL CORE ---
         function renderPortalSection() {
             const v = document.getElementById('portal-view'); v.innerHTML = '';
             if (state.portals.length === 0) {
@@ -1236,62 +1290,72 @@
 
         // --- ONBOARDING & GUIDED TOUR ---
         function concludeSetup() {
-    // 1. Capture choices from initial menu
-    state.prefs.useLDS = document.getElementById('pref-lds').checked;
-    state.prefs.showScripture = document.getElementById('pref-script-master').checked;
-    state.prefs.firstRun = false;
-
-    // 2. Sync Settings panel checkboxes to match these choices
-    const settingsScriptToggle = document.getElementById('set-script-master');
-    const settingsLDSToggle = document.getElementById('set-lds');
-    if (settingsScriptToggle) settingsScriptToggle.checked = state.prefs.showScripture;
-    if (settingsLDSToggle) settingsLDSToggle.checked = state.prefs.useLDS;
-
-    // 3. Close modal and save
-    closeMod('mod-setup');
-    syncState(); 
-
-    // 4. Apply visibility immediately before rendering
-    updateInterfaceConfig(true); 
-    renderAll(); 
-    refreshScripture(); 
-    
-    setTimeout(executeTour, 500);
-}
+            state.prefs.useLDS = document.getElementById('pref-lds').checked;
+            state.prefs.showScripture = document.getElementById('pref-script-master').checked;
+            state.prefs.firstRun = false;
+            const settingsScriptToggle = document.getElementById('set-script-master');
+            const settingsLDSToggle = document.getElementById('set-lds');
+            if (settingsScriptToggle) settingsScriptToggle.checked = state.prefs.showScripture;
+            if (settingsLDSToggle) settingsLDSToggle.checked = state.prefs.useLDS;
+            closeMod('mod-setup');
+            syncState(); 
+            updateInterfaceConfig(true); 
+            renderAll(); 
+            refreshScripture(); 
+            setTimeout(executeTour, 500);
+        }
 
         async function executeTour() {
             const steps = [
-                { id: 'tour-brand', t: 'Welcome', d: 'This is your personal data tracker. All data is kept locally in your browser.' },
+                 { id: 'tour-brand', t: 'Welcome', d: 'This is your personal data tracker. All data is kept locally in your browser.' },
                 { id: 'scripture-bar', t: 'Scripture', d: 'A scripture verse is selected here on every refresh.' },
                 { id: 'tour-tasks', t: 'Tasks', d: 'Manage multiple task lists. Completed items move to the bottom automatically.' },
                 { id: 'tour-timer', t: 'Time', d: 'Use this Pomodoro clock to keep yourself focused during work.' },
-                { id: 'tour-habits', t: 'Habits', d: 'Track recurring weekly goals and visually monitor your progress.' }
+                { id: 'tour-habits', t: 'Habits', d: 'Track goals and visually monitor your progress.' },
+                { id: 'tour-links', t: 'Shortcuts', d: 'Quick access links to your most visited websites.' },
+                { id: 'tour-notes', t: 'Notepad', d: ' Basic Notepaf for writing down information.' },
+                { id: 'tour-settings', t: 'Full Control', d: 'Customize colors, modules, themes, and much more from the settings.' }
             ];
 
             for (let step of steps) {
                 const el = document.getElementById(step.id);
-                if (!el) continue;
+                if (!el || el.style.display === 'none') continue;
                 el.classList.add('tour-highlight');
-                
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 await new Promise(resolve => {
                     const bubble = document.createElement('div');
-                    bubble.style = `position:fixed; background:var(--bg-primary); border:1px solid var(--accent-color); padding:1.5rem; border-radius:1rem; width:280px; z-index:20000; box-shadow:0 30px 60px rgba(0,0,0,0.8);`;
-                    bubble.innerHTML = `<h4 style="margin-bottom:0.5rem; color:var(--accent-color)">${step.t}</h4><p style="font-size:0.85rem; opacity:0.8; margin-bottom:1.25rem">${step.d}</p><button class="nx-btn" style="width:100%; justify-content:center">Next</button>`;
+                    bubble.style = `position:fixed; background:var(--bg-primary); border:2px solid var(--accent-color); padding:1.5rem; border-radius:1.5rem; width:280px; z-index:20002; box-shadow:0 30px 60px rgba(0,0,0,0.9); transition: all 0.3s ease; opacity:0;`;
+                    bubble.innerHTML = `
+                        <h4 style="margin-bottom:0.75rem; color:var(--accent-color); font-weight:900">${step.t}</h4>
+                        <p style="font-size:0.85rem; opacity:0.8; margin-bottom:1.5rem; line-height:1.5">${step.d}</p>
+                        <div style="display:flex; gap:0.5rem">
+                            <button class="nx-btn" id="tour-next" style="flex:2; justify-content:center; background:var(--accent-color)">Got it</button>
+                            <button class="nx-btn" id="tour-skip" style="flex:1; justify-content:center; font-size:0.7rem; opacity:0.5">Skip</button>
+                        </div>`;
                     document.body.appendChild(bubble);
-                    
                     const rect = el.getBoundingClientRect();
-                    bubble.style.top = (rect.bottom + 15) + "px";
-                    bubble.style.left = Math.max(15, rect.left) + "px";
-
-                    bubble.querySelector('button').onclick = () => {
-                        el.classList.remove('tour-highlight');
-                        bubble.remove();
-                        resolve();
-                    };
-                });
+                    let top = rect.bottom + 20;
+                    let left = rect.left;
+                    if (top + 280 > window.innerHeight) top = rect.top - 240;
+                    if (left + 300 > window.innerWidth) left = window.innerWidth - 300;
+                    bubble.style.top = Math.max(20, Math.min(top, window.innerHeight - 280)) + "px";
+                    bubble.style.left = Math.max(20, Math.min(left, window.innerWidth - 300)) + "px";
+                    bubble.style.opacity = '1';
+                    bubble.querySelector('#tour-next').onclick = () => { el.classList.remove('tour-highlight'); bubble.remove(); resolve(); };
+                    bubble.querySelector('#tour-skip').onclick = () => { el.classList.remove('tour-highlight'); bubble.remove(); triggerToast("Tour Complete!"); throw "SKIP_TOUR"; };
+                }).catch(e => { if(e === "SKIP_TOUR") return; });
             }
             triggerToast("Tour Complete!");
         }
+
+        // --- POPUP EXTERNAL CLICK LOGIC ---
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('nx-modal-overlay')) {
+                if (e.target.id !== 'mod-lock' && e.target.id !== 'mod-setup') {
+                    e.target.style.display = 'none';
+                }
+            }
+        });
 
         // --- DATA MANAGEMENT ---
         function exportData() {
@@ -1307,7 +1371,6 @@
                 URL.revokeObjectURL(url);
                 triggerToast("Database Exported");
             } catch (err) {
-                console.error("Export failed:", err);
                 triggerToast("Export Failed");
             }
         }
@@ -1315,7 +1378,6 @@
         function importData(input) {
             const file = input.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
@@ -1327,13 +1389,8 @@
                         updateInterfaceConfig(true); 
                         triggerToast("Backup Restored");
                         input.value = ''; 
-                    } else {
-                        throw new Error("Invalid format");
-                    }
-                } catch (err) {
-                    console.error("Import failed:", err);
-                    triggerToast("Import Failed");
-                }
+                    } else { throw new Error("Invalid format"); }
+                } catch (err) { triggerToast("Import Failed"); }
             };
             reader.readAsText(file);
         }
@@ -1345,7 +1402,7 @@
             if (state.password && document.getElementById('mod-lock').style.display !== 'flex') {
                 inactivityTimer = setTimeout(() => {
                     if (state.password) openMod('mod-lock');
-                }, 120000); // 2 Minutes
+                }, 120000); 
             }
         }
 
@@ -1355,9 +1412,7 @@
                 closeMod('mod-lock');
                 input.value = '';
                 resetInactivityTimer();
-            } else {
-                triggerToast("Identity Verification Failed");
-            }
+            } else { triggerToast("Identity Verification Failed"); }
         }
 
         ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
@@ -1367,39 +1422,23 @@
         // --- BOOTSTRAP ---
         window.onload = bootstrapState;
 
-        /* 
-        ================================================================================
-        SYSTEM POWER-PATCH V.14.1 (ADDITIVE FIXES ONLY)
-        ================================================================================
-        */
-
-        // 1. OVERRIDE CORE STATE FOR NEW PREFS
         const originalBootstrap = window.onload;
         window.onload = function() {
             if (originalBootstrap) originalBootstrap();
-            
-            // Inject new default state for new features if missing
             if (!state.prefs.accentColor) state.prefs.accentColor = "#3b82f6";
             if (state.prefs.showScripture === undefined) state.prefs.showScripture = true;
             if (state.prefs.is24h === undefined) state.prefs.is24h = false;
             if (state.prefs.blur === undefined) state.prefs.blur = 32;
-            if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true };
+            if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true };
             if (state.password === undefined) state.password = '';
-            
-            // Apply interface settings manually on boot
             updateInterfaceConfig(true); 
-            
-            // Fix Scripture bug (Immediate check)
             const scriptMaster = document.getElementById('pref-script-master');
             if(scriptMaster) state.prefs.showScripture = scriptMaster.checked;
-
-            // START REAL-TIME CLOCK & WEATHER ENGINE
             startNexusEnvironmentalEngine();
             setupLinkProtocol();
             resetInactivityTimer();
         };
 
-        // 2. FIXED INTERFACE CONFIG & PERSISTENCE
         function updateInterfaceConfig(init = false) {
             const ui = {
                 accent: document.getElementById('set-accent-color'),
@@ -1415,50 +1454,48 @@
                 state.prefs.is24h = ui.is24.checked;
                 state.prefs.useLDS = ui.lds.checked;
                 state.password = ui.pass.value;
-                
                 state.prefs.vis.tasks = document.getElementById('vis-tasks').checked;
                 state.prefs.vis.timer = document.getElementById('vis-timer').checked;
                 state.prefs.vis.habits = document.getElementById('vis-habits').checked;
                 state.prefs.vis.links = document.getElementById('vis-links').checked;
                 state.prefs.vis.notes = document.getElementById('vis-notes').checked;
+                state.prefs.vis.countdowns = document.getElementById('vis-countdowns').checked;
                 state.prefs.vis.weather = document.getElementById('vis-weather').checked;
             } else {
-                // Load into UI
                 ui.accent.value = state.prefs.accentColor;
                 ui.script.checked = state.prefs.showScripture;
                 ui.is24.checked = state.prefs.is24h;
                 ui.lds.checked = state.prefs.useLDS;
                 ui.pass.value = state.password || '';
-                
                 document.getElementById('vis-tasks').checked = state.prefs.vis.tasks;
                 document.getElementById('vis-timer').checked = state.prefs.vis.timer;
                 document.getElementById('vis-habits').checked = state.prefs.vis.habits;
                 document.getElementById('vis-links').checked = state.prefs.vis.links;
                 document.getElementById('vis-notes').checked = state.prefs.vis.notes;
+                document.getElementById('vis-countdowns').checked = state.prefs.vis.countdowns;
                 document.getElementById('vis-weather').checked = state.prefs.vis.weather;
             }
 
-            // Apply Styles
             document.documentElement.style.setProperty('--accent-color', state.prefs.accentColor);
             document.documentElement.style.setProperty('--panel-blur', state.prefs.blur + 'px');
             document.documentElement.style.setProperty('--accent-glow', state.prefs.accentColor + '55');
-            
-            // Toggle Element Visibility
             document.getElementById('scripture-bar').style.display = state.prefs.showScripture ? 'block' : 'none';
             document.getElementById('tour-tasks').style.display = state.prefs.vis.tasks ? 'flex' : 'none';
             document.getElementById('tour-timer').style.display = state.prefs.vis.timer ? 'flex' : 'none';
             document.getElementById('tour-habits').style.display = state.prefs.vis.habits ? 'flex' : 'none';
             document.getElementById('tour-links').style.display = state.prefs.vis.links ? 'flex' : 'none';
             document.getElementById('tour-notes').style.display = state.prefs.vis.notes ? 'flex' : 'none';
+            document.getElementById('tour-countdowns').style.display = state.prefs.vis.countdowns ? 'flex' : 'none';
             document.getElementById('weather-node').style.display = state.prefs.vis.weather ? 'block' : 'none';
-
             if (!init) { syncState(); refreshScripture(); refreshClockUI(); }
         }
 
-        // 3. OVERRIDE REFRESH CLOCK (SUPPORT 24H)
-        const oldRefreshClockUI = refreshClockUI;
         window.refreshClockUI = function() {
-            if (!state.prefs.is24h) { oldRefreshClockUI(); return; }
+            if (!state.prefs.is24h) { 
+                const m = Math.floor(state.time / 60); const s = state.time % 60;
+                document.getElementById('clock').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                return; 
+            }
             const totalSec = state.time;
             const h = Math.floor(totalSec / 3600);
             const m = Math.floor((totalSec % 3600) / 60);
@@ -1467,104 +1504,136 @@
             if(target) target.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         };
 
-        // 4. ENVIRONMENTAL NODES (FIXED CLOCK & ACTUAL WEATHER)
         function startNexusEnvironmentalEngine() {
-            // Live Clock Implementation
             setInterval(() => {
                 const now = new Date();
                 const node = document.getElementById('real-time-clock');
-                if (state.prefs.is24h) {
-                    node.innerText = now.toLocaleTimeString('en-GB', { hour12: false });
-                } else {
-                    node.innerText = now.toLocaleTimeString('en-US');
-                }
+                if (state.prefs.is24h) { node.innerText = now.toLocaleTimeString('en-GB', { hour12: false }); }
+                else { node.innerText = now.toLocaleTimeString('en-US'); }
             }, 1000);
-
-            // Real Weather Implementation (Open-Meteo)
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(async (pos) => {
                     try {
                         const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&current_weather=true&temperature_unit=fahrenheit`);
                         const data = await res.json();
-                        if (data.current_weather) {
-                            document.getElementById('weather-node').innerText = `${Math.round(data.current_weather.temperature)}°F`;
-                        }
+                        if (data.current_weather) { document.getElementById('weather-node').innerText = `${Math.round(data.current_weather.temperature)}°F`; }
                     } catch (e) { console.error("Weather Engine Sync Error"); }
                 });
             }
         }
 
-        // 5. GLOBAL LINK PROTOCOL (FORCE NEW TAB)
         function setupLinkProtocol() {
             document.addEventListener('click', (e) => {
                 const link = e.target.closest('a');
-                if (link) {
-                    link.setAttribute('target', '_blank');
-                    link.setAttribute('rel', 'noopener noreferrer');
-                }
+                if (link) { link.setAttribute('target', '_blank'); link.setAttribute('rel', 'noopener noreferrer'); }
             }, true);
         }
 
-        // 6. FIXED TOUR LOGIC (POSITIONING & INTERACTION)
-        window.executeTour = async function() {
-            const steps = [
-                 { id: 'tour-brand', t: 'Welcome', d: 'This is your personal data tracker. All data is kept locally in your browser.' },
-                { id: 'scripture-bar', t: 'Scripture', d: 'A scripture verse is selected here on every refresh.' },
-                { id: 'tour-tasks', t: 'Tasks', d: 'Manage multiple task lists. Completed items move to the bottom automatically.' },
-                { id: 'tour-timer', t: 'Time', d: 'Use this Pomodoro clock to keep yourself focused during work.' },
-                { id: 'tour-habits', t: 'Habits', d: 'Track goals and visually monitor your progress.' },
-                { id: 'tour-links', t: 'Shortcuts', d: 'Quick access links to your most visited websites.' },
-                { id: 'tour-notes', t: 'Notepad', d: ' Basic Notepaf for writing down information.' },
-                { id: 'tour-settings', t: 'Full Control', d: 'Customize colors, modules, themes, and much more from the settings.' }
-            ];
+        // --- COUNTDOWN ENGINE ---
+        function spawnCountdownCreator() {
+            const f = document.getElementById('creator-fields');
+            document.getElementById('creator-title').innerText = "Set up Countdown";
+            f.innerHTML = `
+                <input type="text" id="cd-name" class="nx-input" placeholder="Event Name">
+                <input type="datetime-local" id="cd-date" class="nx-input">
+                <input type="text" id="cd-subtext" class="nx-input" placeholder="Custom Subtext (Ex: 'until birthday')">
+                <select id="cd-format" class="nx-input">
+                    <option value="numbers">Numbers Only (00:00:00)</option>
+                    <option value="subtext" selected>Numbers + Subtext</option>
+                    <option value="days">Days Only</option>
+                </select>
+                <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.8rem; opacity:0.6; cursor:pointer;">
+                    <input type="checkbox" id="cd-set-top"> Stick to Header
+                </label>
+            `;
+            
+            document.getElementById('creator-save-btn').onclick = () => {
+                const name = document.getElementById('cd-name').value;
+                const date = document.getElementById('cd-date').value;
+                const format = document.getElementById('cd-format').value;
+                const userSub = document.getElementById('cd-subtext').value;
+                const isTop = document.getElementById('cd-set-top').checked;
 
-            for (let step of steps) {
-                const el = document.getElementById(step.id);
-                if (!el || el.style.display === 'none') continue;
+                if(!name || !date) return triggerToast("Error: Data Required");
+
+                const id = Math.random().toString(36).substr(2, 9);
+                state.countdowns.push({ 
+                    id, 
+                    name, 
+                    target: new Date(date).getTime(), 
+                    format, 
+                    subtext: userSub 
+                });
                 
-                el.classList.add('tour-highlight');
-                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (isTop) state.topCountdownId = id;
 
-                await new Promise(resolve => {
-                    const bubble = document.createElement('div');
-                    bubble.style = `position:fixed; background:var(--bg-primary); border:2px solid var(--accent-color); padding:1.5rem; border-radius:1.5rem; width:280px; z-index:20002; box-shadow:0 30px 60px rgba(0,0,0,0.9); transition: all 0.3s ease; opacity:0;`;
-                    bubble.innerHTML = `
-                        <h4 style="margin-bottom:0.75rem; color:var(--accent-color); font-weight:900">${step.t}</h4>
-                        <p style="font-size:0.85rem; opacity:0.8; margin-bottom:1.5rem; line-height:1.5">${step.d}</p>
-                        <div style="display:flex; gap:0.5rem">
-                            <button class="nx-btn" id="tour-next" style="flex:2; justify-content:center; background:var(--accent-color)">Got it</button>
-                            <button class="nx-btn" id="tour-skip" style="flex:1; justify-content:center; font-size:0.7rem; opacity:0.5">Skip</button>
-                        </div>`;
-                    document.body.appendChild(bubble);
+                closeMod('mod-creator');
+                renderCountdowns();
+                syncState();
+            };
+            openMod('mod-creator');
+        }
 
-                    // SMART POSITIONING
-                    const rect = el.getBoundingClientRect();
-                    let top = rect.bottom + 20;
-                    let left = rect.left;
-                    
-                    if (top + 280 > window.innerHeight) top = rect.top - 240;
-                    if (left + 300 > window.innerWidth) left = window.innerWidth - 300;
-                    
-                    bubble.style.top = Math.max(20, Math.min(top, window.innerHeight - 280)) + "px";
-                    bubble.style.left = Math.max(20, Math.min(left, window.innerWidth - 300)) + "px";
-                    bubble.style.opacity = '1';
+        function renderCountdowns() {
+            const v = document.getElementById('countdown-view');
+            if(!v) return;
+            v.innerHTML = '';
+            if (state.countdowns.length === 0) { v.innerHTML = '<div class="empty-state">No countdowns active.</div>'; }
+            state.countdowns.forEach(c => {
+                const isTop = state.topCountdownId === c.id;
+                const row = document.createElement('div');
+                row.className = 'countdown-card-item';
+                row.innerHTML = `
+                    <div class="cd-actions">
+                        <button class="cd-mini-btn ${isTop ? 'active' : ''}" title="Pin to header" onclick="pinCountdown('${c.id}')"><i data-lucide="pin" size="12"></i></button>
+                        <button class="cd-mini-btn" style="color:var(--danger)" onclick="deleteCountdown('${c.id}')"><i data-lucide="trash-2" size="12"></i></button>
+                    </div>
+                    <div class="cd-label">${c.name}</div>
+                    <div class="cd-val" id="val-${c.id}">00:00:00</div>
+                `;
+                v.appendChild(row);
+            });
+            lucide.createIcons();
+        }
 
-                    bubble.querySelector('#tour-next').onclick = () => {
-                        el.classList.remove('tour-highlight');
-                        bubble.remove();
-                        resolve();
-                    };
-                    bubble.querySelector('#tour-skip').onclick = () => {
-                        el.classList.remove('tour-highlight');
-                        bubble.remove();
-                        triggerToast("Tour Complete!");
-                        throw "SKIP_TOUR";
-                    };
-                }).catch(e => { if(e === "SKIP_TOUR") return; });
-            }
-            triggerToast("Tour Complete!");
-        };
+        function deleteCountdown(id) {
+            state.countdowns = state.countdowns.filter(x => x.id !== id);
+            if(state.topCountdownId === id) state.topCountdownId = null;
+            renderCountdowns();
+            syncState();
+        }
 
+        function pinCountdown(id) {
+            state.topCountdownId = (state.topCountdownId === id) ? null : id;
+            renderCountdowns();
+            syncState();
+        }
+
+        function updateCountdownClocks() {
+            const topBar = document.getElementById('top-countdown-display');
+            if(!topBar) return;
+            let topHtml = "";
+            state.countdowns.forEach(c => {
+                const now = new Date().getTime();
+                const dist = c.target - now;
+                const d = Math.floor(dist / (1000 * 60 * 60 * 24));
+                const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((dist % (1000 * 60)) / 1000);
+                let suffix = c.subtext || "Remaining";
+                let string = "";
+                if (dist < 0) { string = "TARGET REACHED"; }
+                else if (c.format === 'numbers') { string = `${d.toString().padStart(2,'0')}:${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
+                else if (c.format === 'days') { string = `${d} Days ${suffix}`; }
+                else { string = `${d}d ${h}h ${m}m ${s}s ${suffix}`; }
+                const el = document.getElementById(`val-${c.id}`);
+                if(el) el.innerText = string;
+                if (state.topCountdownId === c.id) { topHtml = `<i data-lucide="clock" size="14"></i> ${string}`; }
+            });
+            if (topHtml) { topBar.style.display = 'flex'; topBar.innerHTML = topHtml; lucide.createIcons(); }
+            else { topBar.style.display = 'none'; }
+        }
+        setInterval(updateCountdownClocks, 1000);
         lucide.createIcons();
     </script>
 </body>
