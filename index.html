@@ -1577,13 +1577,20 @@
                 closeMod('mod-lock');
                 input.value = '';
                 resetInactivityTimer();
-            } else { triggerToast("Identity Verification Failed"); }
+            } else { 
+                triggerToast("Incorrect Password."); 
+            }
         }
+
+        // Submits password immediately when Enter is pressed
+        document.getElementById('lock-pass-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') unlockApp();
+        });
 
         ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
             window.addEventListener(evt, resetInactivityTimer);
         });
-
+        
         // --- BOOTSTRAP ---
         window.onload = bootstrapState;
 
