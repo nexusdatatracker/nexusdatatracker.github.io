@@ -1644,6 +1644,12 @@
             document.documentElement.style.setProperty('--accent-color', state.prefs.accentColor);
             document.documentElement.style.setProperty('--panel-blur', state.prefs.blur + 'px');
             document.documentElement.style.setProperty('--accent-glow', state.prefs.accentColor + '55');
+            
+            // SYSTEM FAVICON PROTOCOL
+            let link = document.querySelector("link[rel~='icon']") || document.createElement('link');
+            link.rel = 'icon'; link.href = 'https://workik.com/pstatic/331075/AIWorkspaceCodeFiles/MwwEXkGWnu258zsdqJbC/AIImages/5ac5e12b-3168-44f3-87e2-8a7d5bb85a37.png';
+            document.head.appendChild(link);
+
             document.getElementById('scripture-bar').style.display = state.prefs.showScripture ? 'block' : 'none';
             document.getElementById('tour-tasks').style.display = state.prefs.vis.tasks ? 'flex' : 'none';
             document.getElementById('tour-timer').style.display = state.prefs.vis.timer ? 'flex' : 'none';
