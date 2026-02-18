@@ -148,6 +148,7 @@
             position: relative;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex; flex-direction: column;
+            height: fit-content; /* Ensure boxes adapt to content */
         }
 
         .nx-card:hover { border-color: var(--accent-color); box-shadow: 0 10px 40px -10px var(--accent-glow); transform: translateY(-3px); }
@@ -772,7 +773,7 @@
         <main class="nx-dashboard-grid">
 
             <!-- TASKS -->
-            <section class="nx-card grid-md row-3" id="tour-tasks">
+            <section class="nx-card grid-md" id="tour-tasks">
                 <div class="nx-card-header">
                     <span class="nx-card-title"><i data-lucide="check-square"></i> My Tasks</span>
                     <div style="display: flex; gap: 0.5rem;">
@@ -783,7 +784,7 @@
                     </div>
                 </div>
 
-                <div id="todo-view" style="height: 520px; overflow-y: auto; padding-right: 0.75rem; display: flex; flex-direction: column;">
+                <div id="todo-view" style="padding-right: 0.75rem; display: flex; flex-direction: column;">
                 </div>
 
                 <div style="margin-top: 2rem;">
@@ -794,7 +795,7 @@
             </section>
 
             <!-- FOCUS TIMER -->
-            <section class="nx-card grid-sm row-2" id="tour-timer">
+            <section class="nx-card grid-sm" id="tour-timer">
                 <div class="nx-card-header">
                     <span class="nx-card-title"><i data-lucide="clock"></i> Focus Timer</span>
                 </div>
@@ -812,18 +813,18 @@
             </section>
 
             <!-- HABITS -->
-            <section class="nx-card grid-sm row-3" id="tour-habits">
+            <section class="nx-card grid-sm" id="tour-habits">
                 <div class="nx-card-header">
                     <span class="nx-card-title"><i data-lucide="trending-up"></i> My Habits</span>
                 </div>
-                <div id="habit-view" style="height: 540px; overflow-y: auto;"></div>
+                <div id="habit-view"></div>
                 <button class="nx-btn" style="width: 100%; justify-content: center; margin-top: 1.5rem;" onclick="spawnHabitCreator()">
                     <i data-lucide="plus"></i> Add Habit
                 </button>
             </section>
 
                                                <!-- LINK PORTALS -->
-            <section class="nx-card grid-sm row-3" id="tour-links">
+            <section class="nx-card grid-sm" id="tour-links">
                 <div class="nx-card-header" style="flex-direction: column; align-items: flex-start; gap: 0.8rem; margin-bottom: 1.5rem;">
                     <!-- Row 1: Title -->
                     <span class="nx-card-title"><i data-lucide="link-2"></i> Shortcuts</span>
@@ -840,13 +841,13 @@
                     <select id="portal-list-sel" class="nx-btn" style="width: 100%; padding: 0.65rem 2.5rem 0.65rem 1rem; font-size: 0.75rem;" onchange="switchPortalFolder()"></select>
                 </div>
                 
-                <!-- Scrollable area for the links -->
-                <div style="flex: 1; overflow-y: auto; padding-right: 5px;">
+                <!-- Expanded area for the links -->
+                <div style="padding-right: 5px;">
                     <div class="portal-grid" id="portal-view"></div>
                 </div>
             </section>
 
-            <!-- NOTE ARCHIVE (DOCS MODE) -->
+            <!-- NOTE ARCHIVE (DOCS MODE) - HEIGHT UNCHANGED AS REQUESTED -->
             <section class="nx-card grid-md row-2" id="tour-notes">
                 <div class="nx-card-header">
                     <span class="nx-card-title"><i data-lucide="file-text"></i> Notepad</span>
@@ -898,12 +899,12 @@
                 </div>
             </section>
 <!-- COUNTDOWN MODULE -->
-             <section class="nx-card grid-sm row-2" id="tour-countdowns">
+             <section class="nx-card grid-sm" id="tour-countdowns">
                 <div class="nx-card-header">
                     <span class="nx-card-title"><i data-lucide="hourglass"></i> Countdown Timers</span>
                     <button class="nx-btn nx-btn-icon" onclick="spawnCountdownCreator()"><i data-lucide="plus"></i></button>
                 </div>
-                <div id="countdown-view" style="height: 250px; overflow-y: auto;"></div>
+                <div id="countdown-view"></div>
             </section>
             
         </main>
@@ -1968,7 +1969,7 @@
                 const s = Math.floor((dist % (1000 * 60)) / 1000);
                 let suffix = c.subtext || "Remaining";
                 let string = "";
-                if (dist < 0) { string = "TARGET REACHED"; }
+                if (dist < 0) { string = "Countdown ended."; }
                 else if (c.format === 'numbers') { string = `${d.toString().padStart(2,'0')}:${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
                 else if (c.format === 'days') { string = `${d} Days ${suffix}`; }
                 else { string = `${d}d ${h}h ${m}m ${s}s ${suffix}`; }
