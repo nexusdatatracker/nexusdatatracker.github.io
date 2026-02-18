@@ -698,6 +698,7 @@
                 <span class="settings-label">System Preferences & Security</span>
                 <div class="toggle-row"><span>Clock: 24-Hour</span> <input type="checkbox" id="set-24h" onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row"><span>Include LDS Scriptures</span> <input type="checkbox" id="set-lds" checked onchange="updateInterfaceConfig()"></div>
+                <div class="toggle-row"><span>No Scripture at all</span> <input type="checkbox" id="set-no-scripture" onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row">
                     <span>Admin Password</span>
                     <input type="password" id="set-password" placeholder="Password" class="nx-input" style="width: 150px; margin-bottom: 0;" onchange="updateInterfaceConfig()">
@@ -1017,6 +1018,8 @@
          * Updates: Now respects the setup preference for LDS sources.
          */
         async function refreshScripture() {
+            if (state.prefs.noScripture) return;
+
             const bar = document.getElementById('scripture-bar');
             
             try {
@@ -1674,6 +1677,7 @@
             if (originalBootstrap) originalBootstrap();
             if (!state.prefs.accentColor) state.prefs.accentColor = "#3b82f6";
             if (state.prefs.showScripture === undefined) state.prefs.showScripture = true;
+                        if (state.prefs.noScripture === undefined) state.prefs.noScripture = false;
             if (state.prefs.is24h === undefined) state.prefs.is24h = false;
             if (state.prefs.blur === undefined) state.prefs.blur = 32;
             if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true };
@@ -1693,6 +1697,7 @@
                 script: document.getElementById('set-script-master'),
                 is24: document.getElementById('set-24h'),
                 lds: document.getElementById('set-lds'),
+                noScript: document.getElementById('set-no-scripture'),
                 pass: document.getElementById('set-password'),
                 recoveryq: document.getElementById('set-recovery-q'),
                 recoverya: document.getElementById('set-recovery-a')
@@ -1703,6 +1708,7 @@
                 state.prefs.showScripture = ui.script.checked;
                 state.prefs.is24h = ui.is24.checked;
                 state.prefs.useLDS = ui.lds.checked;
+                state.prefs.noScripture = ui.noScript.checked;
                 state.password = ui.pass.value;
                 state.recovery.question = ui.recoveryq.value;
                 state.recovery.answer = ui.recoverya.value;
@@ -1716,6 +1722,7 @@
             } else {
                 ui.accent.value = state.prefs.accentColor;
                 ui.script.checked = state.prefs.showScripture;
+                ui.noScript.checked = state.prefs.noScripture || false;
                 ui.is24.checked = state.prefs.is24h;
                 ui.lds.checked = state.prefs.useLDS;
                 ui.pass.value = state.password || '';
@@ -1739,7 +1746,13 @@
             link.rel = 'icon'; link.href = 'https://workik.com/pstatic/331075/AIWorkspaceCodeFiles/MwwEXkGWnu258zsdqJbC/AIImages/5ac5e12b-3168-44f3-87e2-8a7d5bb85a37.png';
             document.head.appendChild(link);
 
-            document.getElementById('scripture-bar').style.display = state.prefs.showScripture ? 'block' : 'none';
+                        const sBar = document.getElementById('scripture-bar');
+            if (state.prefs.noScripture) {
+                sBar.style.display = 'none';
+            } else {
+                sBar.style.display = state.prefs.showScripture ? 'block' : 'none';
+            }
+
             document.getElementById('tour-tasks').style.display = state.prefs.vis.tasks ? 'flex' : 'none';
             document.getElementById('tour-timer').style.display = state.prefs.vis.timer ? 'flex' : 'none';
             document.getElementById('tour-habits').style.display = state.prefs.vis.habits ? 'flex' : 'none';
