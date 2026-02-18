@@ -625,7 +625,12 @@
             </label>
 
             <p style="font-weight: 800; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 1rem;">Security (Optional)</p>
-            <input type="password" id="pref-pass-setup" class="nx-input" placeholder="Set Password" style="margin-bottom: 2.5rem;">
+            <div style="display: flex; flex-direction: column; gap: 0.1rem;">
+                <input type="password" id="pref-pass-setup" class="nx-input" placeholder="Set Password" style="margin-bottom: 0.5rem;">
+                <input type="password" id="pref-pass-confirm" class="nx-input" placeholder="Confirm Password" style="margin-bottom: 0.5rem;">
+                <input type="text" id="pref-q-setup" class="nx-input" placeholder="Security Question (e.g. First pet?)" style="margin-bottom: 0.5rem;">
+                <input type="text" id="pref-a-setup" class="nx-input" placeholder="Security Answer" style="margin-bottom: 2.5rem;">
+            </div>
 
             <button class="nx-btn" style="width: 100%; background: var(--accent-color); padding: 1.25rem; justify-content: center;" onclick="concludeSetup()">Start Tour & Begin</button>
         </div>
@@ -635,9 +640,23 @@
     <div class="nx-modal-overlay" id="mod-lock" style="display: none; background: #000; z-index: 100000;">
         <div class="nx-modal" style="text-align: center;">
             <h1 style="font-size: 3rem; font-weight: 950; letter-spacing: -2px; margin-bottom: 2rem;">NEXUS<span style="color: var(--accent-color);">.</span></h1>
-            <p style="opacity: 0.4; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 2px;">System Locked</p>
-            <input type="password" id="lock-pass-input" class="nx-input" placeholder="Enter Password" style="text-align: center; margin-bottom: 1.5rem;">
-            <button class="nx-btn" style="width: 100%; justify-content: center; background: var(--accent-color); padding: 1rem;" onclick="unlockApp()">Unlock</button>
+            
+            <!-- Standard Unlock View -->
+            <div id="lock-standard-view">
+                <p style="opacity: 0.4; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 2px;">System Locked</p>
+                <input type="password" id="lock-pass-input" class="nx-input" placeholder="Enter Password" style="text-align: center; margin-bottom: 1.5rem;">
+                <button class="nx-btn" style="width: 100%; justify-content: center; background: var(--accent-color); padding: 1rem; margin-bottom: 1rem;" onclick="unlockApp()">Unlock</button>
+                <p style="font-size: 0.7rem; opacity: 0.4; cursor: pointer; text-decoration: underline;" onclick="toggleRecovery(true)">Forgot Password?</p>
+            </div>
+
+            <!-- Recovery View -->
+            <div id="lock-recovery-view" style="display: none;">
+                <p style="opacity: 0.4; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 2px;">Account Recovery</p>
+                <p id="recovery-question-display" style="font-weight: 700; margin-bottom: 1.5rem; color: var(--accent-color);"></p>
+                <input type="text" id="lock-answer-input" class="nx-input" placeholder="Your Answer" style="text-align: center; margin-bottom: 1.5rem;">
+                <button class="nx-btn" style="width: 100%; justify-content: center; background: var(--success); padding: 1rem; margin-bottom: 1rem;" onclick="recoverApp()">Verify Answer</button>
+                <p style="font-size: 0.7rem; opacity: 0.4; cursor: pointer; text-decoration: underline;" onclick="toggleRecovery(false)">Back to Login</p>
+            </div>
         </div>
     </div>
 
@@ -676,12 +695,20 @@
             </div>
 
             <div class="settings-sec">
-                <span class="settings-label">System Preferences</span>
+                <span class="settings-label">System Preferences & Security</span>
                 <div class="toggle-row"><span>Clock: 24-Hour</span> <input type="checkbox" id="set-24h" onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row"><span>Include LDS Scriptures</span> <input type="checkbox" id="set-lds" checked onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row">
                     <span>Admin Password</span>
-                    <input type="password" id="set-password" placeholder="Optional" class="nx-input" style="width: 150px; margin-bottom: 0;" onchange="updateInterfaceConfig()">
+                    <input type="password" id="set-password" placeholder="Password" class="nx-input" style="width: 150px; margin-bottom: 0;" onchange="updateInterfaceConfig()">
+                </div>
+                <div class="toggle-row" style="margin-top: 0.8rem;">
+                    <span>Recovery Question</span>
+                    <input type="text" id="set-recovery-q" placeholder="Question" class="nx-input" style="width: 150px; margin-bottom: 0;" onchange="updateInterfaceConfig()">
+                </div>
+                <div class="toggle-row" style="margin-top: 0.8rem;">
+                    <span>Recovery Answer</span>
+                    <input type="text" id="set-recovery-a" placeholder="Answer" class="nx-input" style="width: 150px; margin-bottom: 0;" onchange="updateInterfaceConfig()">
                 </div>
             </div>
 
@@ -1063,6 +1090,7 @@
             clockOn: false,
             cachedVerse: null,
             password: '',
+            recovery: { question: '', answer: '' },
             prefs: { useLDS: true, firstRun: true, vis: { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true } },
             countdowns: [],
             topCountdownId: null
@@ -1079,6 +1107,7 @@
                 if (state.topCountdownId === undefined) state.topCountdownId = null;
                 if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true };
                 else if (state.prefs.vis.countdowns === undefined) state.prefs.vis.countdowns = true;
+                if (!state.recovery) state.recovery = { question: '', answer: '' };
             }
             
             // Auto purge old completed tasks (>5 days)
@@ -1457,10 +1486,21 @@
         }
 
         // --- ONBOARDING & GUIDED TOUR ---
-                function concludeSetup() {
+        function concludeSetup() {
+            const p1 = document.getElementById('pref-pass-setup').value;
+            const p2 = document.getElementById('pref-pass-confirm').value;
+            const q = document.getElementById('pref-q-setup').value;
+            const a = document.getElementById('pref-a-setup').value;
+
+            if (p1 || p2) {
+                if (p1 !== p2) return triggerToast("Passwords do not match!");
+                if (!q || !a) return triggerToast("Security question and answer required for passwords.");
+            }
+
             state.prefs.useLDS = document.getElementById('pref-lds').checked;
             state.prefs.showScripture = document.getElementById('pref-script-master').checked;
-            state.password = document.getElementById('pref-pass-setup').value || '';
+            state.password = p1 || '';
+            state.recovery = { question: q || '', answer: a || '' };
             state.prefs.firstRun = false;
 
             // Sync values to the main settings panel
@@ -1488,7 +1528,7 @@
                 { id: 'tour-timer', t: 'Time', d: 'Use this Pomodoro clock to keep yourself focused during work.' },
                 { id: 'tour-habits', t: 'Habits', d: 'Track goals and visually monitor your progress.' },
                 { id: 'tour-links', t: 'Shortcuts', d: 'Quick access links to your most visited websites.' },
-                { id: 'tour-notes', t: 'Notepad', d: ' Basic Notepaf for writing down information.' },
+                { id: 'tour-notes', t: 'Notepad', d: ' Basic Notepad for writing down information.' },
                 { id: 'tour-settings', t: 'Full Control', d: 'Customize colors, modules, themes, and much more from the settings.' }
             ];
 
@@ -1592,9 +1632,34 @@
             }
         }
 
+        function toggleRecovery(show) {
+            document.getElementById('lock-standard-view').style.display = show ? 'none' : 'block';
+            document.getElementById('lock-recovery-view').style.display = show ? 'block' : 'none';
+            if(show) {
+                document.getElementById('recovery-question-display').innerText = state.recovery?.question || "No security question set.";
+            }
+        }
+
+        function recoverApp() {
+            const inputAnswer = document.getElementById('lock-answer-input').value;
+            if (inputAnswer.toLowerCase().trim() === state.recovery?.answer?.toLowerCase().trim()) {
+                triggerToast("Identity Verified. Access Granted.");
+                closeMod('mod-lock');
+                toggleRecovery(false);
+                document.getElementById('lock-answer-input').value = '';
+                resetInactivityTimer();
+            } else {
+                triggerToast("Incorrect answer.");
+            }
+        }
+
         // Submits password immediately when Enter is pressed
         document.getElementById('lock-pass-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') unlockApp();
+        });
+
+        document.getElementById('lock-answer-input')?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') recoverApp();
         });
 
         ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
@@ -1613,6 +1678,7 @@
             if (state.prefs.blur === undefined) state.prefs.blur = 32;
             if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true };
             if (state.password === undefined) state.password = '';
+            if (!state.recovery) state.recovery = { question: '', answer: '' };
             updateInterfaceConfig(true); 
             const scriptMaster = document.getElementById('pref-script-master');
             if(scriptMaster) state.prefs.showScripture = scriptMaster.checked;
@@ -1627,7 +1693,9 @@
                 script: document.getElementById('set-script-master'),
                 is24: document.getElementById('set-24h'),
                 lds: document.getElementById('set-lds'),
-                pass: document.getElementById('set-password')
+                pass: document.getElementById('set-password'),
+                recoveryq: document.getElementById('set-recovery-q'),
+                recoverya: document.getElementById('set-recovery-a')
             };
 
             if(!init) {
@@ -1636,6 +1704,8 @@
                 state.prefs.is24h = ui.is24.checked;
                 state.prefs.useLDS = ui.lds.checked;
                 state.password = ui.pass.value;
+                state.recovery.question = ui.recoveryq.value;
+                state.recovery.answer = ui.recoverya.value;
                 state.prefs.vis.tasks = document.getElementById('vis-tasks').checked;
                 state.prefs.vis.timer = document.getElementById('vis-timer').checked;
                 state.prefs.vis.habits = document.getElementById('vis-habits').checked;
@@ -1649,6 +1719,8 @@
                 ui.is24.checked = state.prefs.is24h;
                 ui.lds.checked = state.prefs.useLDS;
                 ui.pass.value = state.password || '';
+                ui.recoveryq.value = state.recovery?.question || '';
+                ui.recoverya.value = state.recovery?.answer || '';
                 document.getElementById('vis-tasks').checked = state.prefs.vis.tasks;
                 document.getElementById('vis-timer').checked = state.prefs.vis.timer;
                 document.getElementById('vis-habits').checked = state.prefs.vis.habits;
