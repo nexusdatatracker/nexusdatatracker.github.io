@@ -118,23 +118,23 @@
 
         /* 
         ================================================================================
-        4. RESPONSIVE DASHBOARD GRID & CARDS
+        4. RESPONSIVE DASHBOARD GRID & CARDS (ADAPTIVE FLEX MODEL)
         ================================================================================
         */
         .nx-dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
+            display: flex;
+            flex-wrap: wrap;
             gap: 1.5rem;
-            grid-auto-rows: minmax(130px, auto);
+            align-items: flex-start; /* Key: Elements move up and don't stretch vertically */
         }
 
-        /* GRID BREAKPOINTS */
+        /* Responsive adjustments */
         @media (max-width: 1200px) {
-            .grid-sm { grid-column: span 6 !important; }
-            .grid-md { grid-column: span 12 !important; }
+            .grid-sm { width: calc(50% - 0.75rem) !important; }
+            .grid-md { width: 100% !important; }
         }
         @media (max-width: 768px) {
-            .grid-sm, .grid-md, .grid-lg, .grid-full { grid-column: span 12 !important; }
+            .grid-sm, .grid-md, .grid-lg, .grid-full { width: 100% !important; }
             .nx-header { flex-direction: column; text-align: center; }
             .header-actions { margin-left: 0; width: 100%; justify-content: center; }
         }
@@ -147,8 +147,15 @@
             padding: 1.5rem;
             position: relative;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex; flex-direction: column;
-            height: fit-content; /* Ensure boxes adapt to content */
+            display: flex; 
+            flex-direction: column;
+            height: fit-content; /* Hugs the content inside */
+        }
+
+        /* Specifically keep Notepad fixed size as requested */
+        #tour-notes { 
+            height: 600px; 
+            overflow: hidden;
         }
 
         .nx-card:hover { border-color: var(--accent-color); box-shadow: 0 10px 40px -10px var(--accent-glow); transform: translateY(-3px); }
@@ -164,13 +171,11 @@
             display: flex; align-items: center; gap: 0.75rem;
         }
 
-        /* Span Helpers */
-        .grid-sm { grid-column: span 3; }
-        .grid-md { grid-column: span 6; }
-        .grid-lg { grid-column: span 9; }
-        .grid-full { grid-column: span 12; }
-        .row-2 { grid-row: span 2; }
-        .row-3 { grid-row: span 3; }
+        /* Flex-based Span Helpers instead of Grid Spans */
+        .grid-sm { width: calc(25% - 1.125rem); flex-grow: 1; min-width: 300px; }
+        .grid-md { width: calc(50% - 1.125rem); flex-grow: 1; min-width: 450px; }
+        .grid-lg { width: calc(75% - 1.125rem); flex-grow: 1; min-width: 600px; }
+        .grid-full { width: 100%; }
 
         /* 
         ================================================================================
@@ -247,7 +252,6 @@
         }
 
         .nx-modal h2 { margin-bottom: 2rem; font-weight: 800; letter-spacing: -0.5px; color: var(--accent-color); }
-
         /* 
         ================================================================================
         7. TIMER CORE
@@ -1969,7 +1973,7 @@
                 const s = Math.floor((dist % (1000 * 60)) / 1000);
                 let suffix = c.subtext || "Remaining";
                 let string = "";
-                if (dist < 0) { string = "Countdown ended."; }
+                if (dist < 0) { string = "TARGET REACHED"; }
                 else if (c.format === 'numbers') { string = `${d.toString().padStart(2,'0')}:${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
                 else if (c.format === 'days') { string = `${d} Days ${suffix}`; }
                 else { string = `${d}d ${h}h ${m}m ${s}s ${suffix}`; }
