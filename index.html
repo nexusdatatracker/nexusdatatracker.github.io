@@ -281,7 +281,7 @@
         */
         #nx-toast-container {
             position: fixed; bottom: 2rem; right: 2rem;
-            z-index: 9999999999999999999999; display: flex; flex-direction: column; gap: 1rem;
+            z-index: 1000001; display: flex; flex-direction: column; gap: 1rem;
         }
 
         .nx-toast {
@@ -591,6 +591,7 @@
         .countdown-card-item:hover { border-color: var(--accent-color); }
 
         .cd-val { font-family: var(--font-mono); font-weight: 900; font-size: 1.1rem; color: var(--accent-color); }
+        .cd-val { font-family: var(--font-mono); font-weight: 900; font-size: 1.1rem; color: var(--accent-color); }
         .cd-label { font-size: 0.65rem; text-transform: uppercase; font-weight: 800; opacity: 0.4; letter-spacing: 1px; }
 
         .cd-actions { position: absolute; top: 0.75rem; right: 0.75rem; display: flex; gap: 0.4rem; }
@@ -698,7 +699,6 @@
                 <span class="settings-label">System Preferences & Security</span>
                 <div class="toggle-row"><span>Clock: 24-Hour</span> <input type="checkbox" id="set-24h" onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row"><span>Include LDS Scriptures</span> <input type="checkbox" id="set-lds" checked onchange="updateInterfaceConfig()"></div>
-                <div class="toggle-row"><span>No Scripture at all</span> <input type="checkbox" id="set-no-scripture" onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row">
                     <span>Admin Password</span>
                     <input type="password" id="set-password" placeholder="Password" class="nx-input" style="width: 150px; margin-bottom: 0;" onchange="updateInterfaceConfig()">
@@ -826,7 +826,13 @@
             <section class="nx-card grid-sm h-1" id="tour-links">
                 <div class="nx-card-header">
                     <span class="nx-card-title"><i data-lucide="link-2"></i> Shortcuts</span>
-                    <button class="nx-btn nx-btn-icon" onclick="spawnPortalCreator()"><i data-lucide="plus"></i></button>
+                    <div style="display: flex; gap: 0.3rem;">
+                        <button class="nx-btn nx-btn-icon" title="New Folder" onclick="spawnPortalFolderCreator()"><i data-lucide="folder-plus" size="14"></i></button>
+                        <select id="portal-list-sel" class="nx-btn" style="padding: 0.4rem 2rem 0.4rem 0.8rem; font-size: 0.7rem;" onchange="switchPortalFolder()"></select>
+                        <button class="nx-btn nx-btn-icon" onclick="renamePortalFolder()"><i data-lucide="edit-3" size="14"></i></button>
+                        <button class="nx-btn nx-btn-icon" style="color:var(--danger)" onclick="deletePortalFolder()"><i data-lucide="trash-2" size="14"></i></button>
+                        <button class="nx-btn nx-btn-icon" onclick="spawnPortalCreator()"><i data-lucide="plus" size="14"></i></button>
+                    </div>
                 </div>
                 <div class="portal-grid" id="portal-view"></div>
             </section>
@@ -1088,7 +1094,8 @@
             habits: [],
             notepads: { 'Notepad 1': '<h1>Notepad</h1><p>Begin Typing here...</p>' },
             activeNote: 'Notepad 1',
-            portals: [],
+            portals: { 'Default': [] },
+            activePortalGroup: 'Default',
             time: 1500,
             clockOn: false,
             cachedVerse: null,
@@ -1105,7 +1112,13 @@
             const raw = localStorage.getItem('NEXUS_V12_CORE');
             if (raw) {
                 state = JSON.parse(raw);
-                // MIGRATION PROTOCOL: Ensure new keys exist on old save files
+                // MIGRATION PROTOCOL
+                if (Array.isArray(state.portals)) {
+                    const old = state.portals;
+                    state.portals = { 'Default': old };
+                    state.activePortalGroup = 'Default';
+                }
+                if (!state.activePortalGroup) state.activePortalGroup = 'Default';
                 if (!state.countdowns) state.countdowns = [];
                 if (state.topCountdownId === undefined) state.topCountdownId = null;
                 if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true };
@@ -1322,10 +1335,12 @@
         // --- PORTAL CORE ---
         function renderPortalSection() {
             const v = document.getElementById('portal-view'); v.innerHTML = '';
-            if (state.portals.length === 0) {
-                v.innerHTML = '<div class="empty-state">No links.</div>';
+            const activeGroup = state.portals[state.activePortalGroup] || [];
+
+            if (activeGroup.length === 0) {
+                v.innerHTML = '<div class="empty-state">No links here.</div>';
             } else {
-                state.portals.forEach((p, i) => {
+                activeGroup.forEach((p, i) => {
                     v.innerHTML += `
                         <div class="portal-item">
                             <button class="portal-del-btn" onclick="delPortal(${i})">×</button>
@@ -1336,19 +1351,20 @@
                         </div>`;
                 });
             }
+            refreshSelectors();
             syncState();
         }
 
         function spawnPortalCreator() {
             const f = document.getElementById('creator-fields');
-            document.getElementById('creator-title').innerText = "Add Shortcut";
+            document.getElementById('creator-title').innerText = `Add to ${state.activePortalGroup}`;
             f.innerHTML = `<input type="text" id="in-p-n" class="nx-input" placeholder="Name"><input type="text" id="in-p-u" class="nx-input" placeholder="URL text (google.com)">`;
             document.getElementById('creator-save-btn').onclick = () => {
                 const n = document.getElementById('in-p-n').value;
                 let u = document.getElementById('in-p-u').value;
                 if(n && u) {
                     if (!u.match(/^[a-zA-Z]+:\/\//)) u = 'https://' + u;
-                    state.portals.push({ name: n, url: u });
+                    state.portals[state.activePortalGroup].push({ name: n, url: u });
                     closeMod('mod-creator');
                     renderPortalSection();
                 }
@@ -1356,7 +1372,40 @@
             openMod('mod-creator');
         }
 
-        const delPortal = (i) => { state.portals.splice(i, 1); renderPortalSection(); };
+        const delPortal = (i) => { state.portals[state.activePortalGroup].splice(i, 1); renderPortalSection(); };
+        
+        function spawnPortalFolderCreator() {
+            const f = document.getElementById('creator-fields');
+            document.getElementById('creator-title').innerText = "New Shortcut Folder";
+            f.innerHTML = `<input type="text" id="in-pf-t" class="nx-input" placeholder="Folder Name">`;
+            document.getElementById('creator-save-btn').onclick = () => {
+                const n = document.getElementById('in-pf-t').value; if(!n) return;
+                state.portals[n] = []; state.activePortalGroup = n; closeMod('mod-creator'); renderPortalSection();
+            };
+            openMod('mod-creator');
+        }
+
+        function switchPortalFolder() { state.activePortalGroup = document.getElementById('portal-list-sel').value; renderPortalSection(); }
+
+        async function renamePortalFolder() {
+            const old = state.activePortalGroup;
+            const res = await prompt("Rename shortcut folder:", old);
+            if (res && res !== old) {
+                state.portals[res] = state.portals[old];
+                delete state.portals[old];
+                state.activePortalGroup = res;
+                renderPortalSection();
+            }
+        }
+
+        async function deletePortalFolder() {
+            if (Object.keys(state.portals).length <= 1) return triggerToast("Cannot delete only folder.");
+            if (await confirm(`Delete folder "${state.activePortalGroup}"?`)) {
+                delete state.portals[state.activePortalGroup];
+                state.activePortalGroup = Object.keys(state.portals)[0];
+                renderPortalSection();
+            }
+        }
 
         // --- DOCS EDITOR CORE ---
         function execCmd(command, value = null) {
@@ -1436,6 +1485,14 @@
                 const o = document.createElement('option'); o.value = o.innerText = k;
                 if(k === state.activeList) o.selected = true; tSel.appendChild(o);
             });
+            const pSel = document.getElementById('portal-list-sel');
+            if(pSel) {
+                pSel.innerHTML = '';
+                Object.keys(state.portals).forEach(k => {
+                    const o = document.createElement('option'); o.value = o.innerText = k;
+                    if(k === state.activePortalGroup) o.selected = true; pSel.appendChild(o);
+                });
+            }
             const nSel = document.getElementById('notes-sel'); nSel.innerHTML = '';
             Object.keys(state.notepads).forEach(k => {
                 const o = document.createElement('option'); o.value = o.innerText = k;
@@ -1643,11 +1700,10 @@
             }
         }
 
-              function recoverApp() {
+        function recoverApp() {
             const inputAnswer = document.getElementById('lock-answer-input').value.toLowerCase().trim();
             const savedAnswer = state.recovery?.answer?.toLowerCase().trim();
 
-            // Prevent login if no answer record exists
             if (!savedAnswer || savedAnswer === "") {
                 triggerToast("Account recovery is not configured.");
                 return;
@@ -1685,7 +1741,7 @@
             if (originalBootstrap) originalBootstrap();
             if (!state.prefs.accentColor) state.prefs.accentColor = "#3b82f6";
             if (state.prefs.showScripture === undefined) state.prefs.showScripture = true;
-                        if (state.prefs.noScripture === undefined) state.prefs.noScripture = false;
+            if (state.prefs.noScripture === undefined) state.prefs.noScripture = false;
             if (state.prefs.is24h === undefined) state.prefs.is24h = false;
             if (state.prefs.blur === undefined) state.prefs.blur = 32;
             if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true };
@@ -1754,7 +1810,7 @@
             link.rel = 'icon'; link.href = 'https://workik.com/pstatic/331075/AIWorkspaceCodeFiles/MwwEXkGWnu258zsdqJbC/AIImages/5ac5e12b-3168-44f3-87e2-8a7d5bb85a37.png';
             document.head.appendChild(link);
 
-                        const sBar = document.getElementById('scripture-bar');
+            const sBar = document.getElementById('scripture-bar');
             if (state.prefs.noScripture) {
                 sBar.style.display = 'none';
             } else {
