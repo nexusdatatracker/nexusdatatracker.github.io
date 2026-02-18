@@ -822,19 +822,28 @@
                 </button>
             </section>
 
-            <!-- LINK PORTALS -->
-            <section class="nx-card grid-sm h-1" id="tour-links">
-                <div class="nx-card-header">
+                                               <!-- LINK PORTALS -->
+            <section class="nx-card grid-sm row-3" id="tour-links">
+                <div class="nx-card-header" style="flex-direction: column; align-items: flex-start; gap: 0.8rem; margin-bottom: 1.5rem;">
+                    <!-- Row 1: Title -->
                     <span class="nx-card-title"><i data-lucide="link-2"></i> Shortcuts</span>
-                    <div style="display: flex; gap: 0.3rem;">
-                        <button class="nx-btn nx-btn-icon" title="New Folder" onclick="spawnPortalFolderCreator()"><i data-lucide="folder-plus" size="14"></i></button>
-                        <select id="portal-list-sel" class="nx-btn" style="padding: 0.4rem 2rem 0.4rem 0.8rem; font-size: 0.7rem;" onchange="switchPortalFolder()"></select>
-                        <button class="nx-btn nx-btn-icon" onclick="renamePortalFolder()"><i data-lucide="edit-3" size="14"></i></button>
-                        <button class="nx-btn nx-btn-icon" style="color:var(--danger)" onclick="deletePortalFolder()"><i data-lucide="trash-2" size="14"></i></button>
-                        <button class="nx-btn nx-btn-icon" onclick="spawnPortalCreator()"><i data-lucide="plus" size="14"></i></button>
+                    
+                    <!-- Row 2: Action Buttons (Evenly Distributed) -->
+                    <div style="display: flex; width: 100%; gap: 0.4rem;">
+                        <button class="nx-btn nx-btn-icon" style="flex: 1; justify-content: center;" title="New Folder" onclick="spawnPortalFolderCreator()"><i data-lucide="folder-plus" size="14"></i></button>
+                        <button class="nx-btn nx-btn-icon" style="flex: 1; justify-content: center;" title="Rename Folder" onclick="renamePortalFolder()"><i data-lucide="edit-3" size="14"></i></button>
+                        <button class="nx-btn nx-btn-icon" style="flex: 1; justify-content: center; color:var(--danger)" title="Delete Folder" onclick="deletePortalFolder()"><i data-lucide="trash-2" size="14"></i></button>
+                        <button class="nx-btn nx-btn-icon" style="flex: 1; justify-content: center; background: rgba(255,255,255,0.1);" title="Add New Link" onclick="spawnPortalCreator()"><i data-lucide="plus" size="14"></i></button>
                     </div>
+
+                    <!-- Row 3: Full-Width Folder Selector -->
+                    <select id="portal-list-sel" class="nx-btn" style="width: 100%; padding: 0.65rem 2.5rem 0.65rem 1rem; font-size: 0.75rem;" onchange="switchPortalFolder()"></select>
                 </div>
-                <div class="portal-grid" id="portal-view"></div>
+                
+                <!-- Scrollable area for the links -->
+                <div style="flex: 1; overflow-y: auto; padding-right: 5px;">
+                    <div class="portal-grid" id="portal-view"></div>
+                </div>
             </section>
 
             <!-- NOTE ARCHIVE (DOCS MODE) -->
