@@ -317,10 +317,32 @@
         .habit-row {
             background: rgba(255,255,255,0.02);
             border: 1px solid var(--card-border);
-            border-radius: 1.25rem;
-            padding: 1.25rem;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
             margin-bottom: 1rem;
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            transition: 0.3s;
+        }
+
+        .habit-info-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .habit-button-group {
+            display: flex;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .habit-button-group .nx-btn {
+            flex: 1;
+            justify-content: center;
+            padding: 0.8rem;
         }
 
         .circular-wrap {
@@ -724,6 +746,8 @@
                     <div style="display: flex; gap: 0.5rem;">
                         <button class="nx-btn nx-btn-icon" onclick="spawnWorkspaceCreator()"><i data-lucide="folder-plus"></i></button>
                         <select id="todo-list-sel" class="nx-btn" onchange="switchWorkspace()"></select>
+                        <button class="nx-btn nx-btn-icon" onclick="renameWorkspace()"><i data-lucide="edit-3"></i></button>
+                        <button class="nx-btn nx-btn-icon" style="color:var(--danger)" onclick="deleteWorkspace()"><i data-lucide="trash-2"></i></button>
                     </div>
                 </div>
 
@@ -782,6 +806,8 @@
                     <div style="display: flex; gap: 0.5rem;">
                         <button class="nx-btn nx-btn-icon" onclick="spawnNotepadCreator()"><i data-lucide="plus-circle"></i></button>
                         <select id="notes-sel" class="nx-btn" onchange="switchArchive()"></select>
+                        <button class="nx-btn nx-btn-icon" onclick="renameNotepad()"><i data-lucide="edit-3"></i></button>
+                        <button class="nx-btn nx-btn-icon" style="color:var(--danger)" onclick="deleteNotepad()"><i data-lucide="trash-2"></i></button>
                     </div>
                 </div>
                 
@@ -895,7 +921,66 @@
     ================================================================================
     -->
     <script>
-        
+        /* 
+        ================================================================================
+        DIAGNOSTIC POPUP ENGINE (alert, confirm, prompt)
+        ================================================================================
+        */
+        const nexusDialog = (type, message, defaultValue = "") => {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'nx-modal-overlay';
+                overlay.style = 'display:flex; z-index:1000001; animation: fadeIn 0.3s ease;';
+
+                let icon = "bell", btnText = "Acknowledge", color = "var(--accent-color)";
+                let secondaryBtn = "", inputField = "";
+
+                if (type === 'confirm') {
+                    icon = "help-circle"; color = "var(--danger)"; btnText = "Delete";
+                    secondaryBtn = `<button class="nx-btn" style="flex:1; justify-content:center" id="nx-diag-cancel">Cancel</button>`;
+                }
+                if (type === 'prompt') {
+                    icon = "edit-3"; btnText = "Save";
+                    inputField = `<input type="text" id="nx-diag-input" class="nx-input" value="${defaultValue}" style="text-align:center; margin-bottom:1.5rem">`;
+                    secondaryBtn = `<button class="nx-btn" style="flex:1; justify-content:center" id="nx-diag-cancel">Cancel</button>`;
+                }
+
+                overlay.innerHTML = `
+                    <div class="nx-modal" style="text-align: center; max-width: 400px; border: 1px solid var(--card-border);">
+                        <div style="width: 50px; height: 50px; background: var(--accent-glow); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; color: ${color};">
+                            <i data-lucide="${icon}" size="24"></i>
+                        </div>
+                        <h2 style="margin-bottom: 0.5rem; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px;">Editing Data</h2>
+                        <p style="margin-bottom: 1.5rem; opacity: 0.6; line-height: 1.6; font-size: 0.9rem;">${message}</p>
+                        ${inputField}
+                        <div style="display:flex; gap:0.5rem">
+                            ${secondaryBtn}
+                            <button class="nx-btn" style="flex:1; justify-content:center; background:${color}; color:white" id="nx-diag-ok">${btnText}</button>
+                        </div>
+                    </div>`;
+
+                document.body.appendChild(overlay);
+                if (window.lucide) lucide.createIcons();
+                const input = document.getElementById('nx-diag-input');
+                if (input) { setTimeout(() => { input.focus(); input.select(); }, 50); }
+
+                const finish = (result) => {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => { overlay.remove(); resolve(result); }, 200);
+                };
+
+                overlay.querySelector('#nx-diag-ok').onclick = () => finish(input ? input.value : true);
+                if (overlay.querySelector('#nx-diag-cancel')) {
+                    overlay.querySelector('#nx-diag-cancel').onclick = () => finish(null);
+                }
+            });
+        };
+
+        // Standard overrides
+        window.alert = (msg) => nexusDialog('alert', msg);
+        window.confirm = (msg) => nexusDialog('confirm', msg);
+        window.prompt = (msg, def) => nexusDialog('prompt', msg, def);
+
         /**
          * 1. TRIPLE-PROTOCOL SCRIPTURE ENGINE
          * Updates: Now respects the setup preference for LDS sources.
@@ -1093,9 +1178,36 @@
             openMod('mod-creator');
         }
 
+        async function renameWorkspace() {
+            const oldName = state.activeList;
+            const newName = await prompt("Enter new name for this list:", oldName);
+            if (newName && newName !== oldName) {
+                state.lists[newName] = state.lists[oldName];
+                delete state.lists[oldName];
+                state.activeList = newName;
+                renderTodoSection();
+                refreshSelectors();
+                syncState();
+            }
+        }
+        async function deleteWorkspace() {
+            const target = state.activeList;
+            if (Object.keys(state.lists).length <= 1) return triggerToast("Cannot delete the only list.");
+            if (await confirm(`Permanent delete list "${target}"?`)) {
+                delete state.lists[target];
+                state.activeList = Object.keys(state.lists)[0];
+                renderTodoSection();
+                refreshSelectors();
+                syncState();
+            }
+        }
+
         // --- HABIT CORE ---
         function renderHabitSection() {
-            const v = document.getElementById('habit-view'); v.innerHTML = '';
+            const v = document.getElementById('habit-view'); 
+            if(!v) return;
+            v.innerHTML = '';
+            
             if (state.habits.length === 0) {
                 v.innerHTML = '<div class="empty-state">No habits added.</div>';
             } else {
@@ -1103,20 +1215,32 @@
                     const deg = (h.count / h.goal) * 360;
                     v.innerHTML += `
                         <div class="habit-row">
-                            <div>
-                                <h4 style="font-weight:700">${h.title}</h4>
-                                <p style="font-size:0.7rem; opacity:0.3">${h.count}/${h.goal} this week</p>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:1.25rem">
-                                 <div class="circular-wrap" style="background: conic-gradient(var(--accent-color) ${deg}deg, rgba(255,255,255,0.05) 0deg)">
+                            <div class="habit-info-header">
+                                <div>
+                                    <h4 style="font-weight:700; font-size: 1rem;">${h.title}</h4>
+                                    <p style="font-size:0.75rem; opacity:0.3; margin-top: 4px;">${h.count} / ${h.goal} cycles this week</p>
+                                </div>
+                                <div class="circular-wrap" style="background: conic-gradient(var(--accent-color) ${deg}deg, rgba(255,255,255,0.05) 0deg)">
                                     <div class="progress-val">${h.count}</div>
-                                 </div>
-                                 <button class="nx-btn nx-btn-icon" onclick="incHabit(${i})"><i data-lucide="plus" size="14"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="habit-button-group">
+                                 <button class="nx-btn" title="Increment Progress" onclick="incHabit(${i})">
+                                    <i data-lucide="plus" size="16"></i>
+                                 </button>
+                                 <button class="nx-btn" title="Rename Habit" onclick="renameHabit(${i})">
+                                    <i data-lucide="edit-3" size="16"></i>
+                                 </button>
+                                 <button class="nx-btn" style="color:var(--danger)" title="Delete Habit" onclick="deleteHabit(${i})">
+                                    <i data-lucide="trash-2" size="16"></i>
+                                 </button>
                             </div>
                         </div>`;
                 });
             }
-            lucide.createIcons(); syncState();
+            lucide.createIcons(); 
+            syncState();
         }
 
         function incHabit(i) {
@@ -1141,6 +1265,22 @@
                 renderHabitSection();
             };
             openMod('mod-creator');
+        }
+
+        async function renameHabit(i) {
+            const newName = await prompt("New name for habit:", state.habits[i].title);
+            if (newName) {
+                state.habits[i].title = newName;
+                renderHabitSection();
+                syncState();
+            }
+        }
+        async function deleteHabit(i) {
+            if (await confirm(`Delete habit "${state.habits[i].title}"?`)) {
+                state.habits.splice(i, 1);
+                renderHabitSection();
+                syncState();
+            }
         }
 
         // --- PORTAL CORE ---
@@ -1225,6 +1365,30 @@
                 refreshSelectors();
             };
             openMod('mod-creator');
+        }
+
+        async function renameNotepad() {
+            const oldName = state.activeNote;
+            const newName = await prompt("New name for notepad:", oldName);
+            if (newName && newName !== oldName) {
+                state.notepads[newName] = state.notepads[oldName];
+                delete state.notepads[oldName];
+                state.activeNote = newName;
+                renderActiveNoteUI();
+                refreshSelectors();
+                syncState();
+            }
+        }
+        async function deleteNotepad() {
+            const target = state.activeNote;
+            if (Object.keys(state.notepads).length <= 1) return triggerToast("Cannot delete the only notepad.");
+            if (await confirm(`Permanent delete notepad "${target}"?`)) {
+                delete state.notepads[target];
+                state.activeNote = Object.keys(state.notepads)[0];
+                renderActiveNoteUI();
+                refreshSelectors();
+                syncState();
+            }
         }
 
         // --- SELECTORS & THEMES ---
