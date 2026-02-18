@@ -601,11 +601,11 @@
 </head>
 <body>
 
-    <!-- INITIAL SETUP DIALOG -->
+        <!-- INITIAL SETUP DIALOG -->
     <div class="nx-modal-overlay" id="mod-setup" style="display: none;">
         <div class="nx-modal">
-            <h2>Welcome Home</h2>
-            <p style="margin-bottom: 2rem; opacity: 0.6;">Let's customize your personal dashboard.</p>
+            <h2>Initial Setup</h2>
+            <p style="margin-bottom: 2rem; opacity: 0.6;">Let's customize your dashboard.</p>
             
             <p style="font-weight: 800; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 1rem;">Select Style</p>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 2rem;">
@@ -619,10 +619,13 @@
                 <span>Show Scripture Bar</span>
             </label>
 
-            <label style="display:flex; align-items:center; gap: 1rem; cursor: pointer; margin-bottom: 3rem;">
+            <label style="display:flex; align-items:center; gap: 1rem; cursor: pointer; margin-bottom: 1.5rem;">
                 <input type="checkbox" id="pref-lds" checked style="width: 22px; height: 22px;">
-                <span>Include LDS Scriptures - Leave unchecked for KJV Bible Only</span>
+                <span>Include LDS Scriptures</span>
             </label>
+
+            <p style="font-weight: 800; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 1rem;">Security (Optional)</p>
+            <input type="password" id="pref-pass-setup" class="nx-input" placeholder="Set Password" style="margin-bottom: 2.5rem;">
 
             <button class="nx-btn" style="width: 100%; background: var(--accent-color); padding: 1.25rem; justify-content: center;" onclick="concludeSetup()">Start Tour & Begin</button>
         </div>
@@ -1454,14 +1457,21 @@
         }
 
         // --- ONBOARDING & GUIDED TOUR ---
-        function concludeSetup() {
+                function concludeSetup() {
             state.prefs.useLDS = document.getElementById('pref-lds').checked;
             state.prefs.showScripture = document.getElementById('pref-script-master').checked;
+            state.password = document.getElementById('pref-pass-setup').value || '';
             state.prefs.firstRun = false;
+
+            // Sync values to the main settings panel
             const settingsScriptToggle = document.getElementById('set-script-master');
             const settingsLDSToggle = document.getElementById('set-lds');
+            const settingsPassField = document.getElementById('set-password');
+            
             if (settingsScriptToggle) settingsScriptToggle.checked = state.prefs.showScripture;
             if (settingsLDSToggle) settingsLDSToggle.checked = state.prefs.useLDS;
+            if (settingsPassField) settingsPassField.value = state.password;
+
             closeMod('mod-setup');
             syncState(); 
             updateInterfaceConfig(true); 
