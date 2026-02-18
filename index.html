@@ -281,7 +281,7 @@
         */
         #nx-toast-container {
             position: fixed; bottom: 2rem; right: 2rem;
-            z-index: 10000; display: flex; flex-direction: column; gap: 1rem;
+            z-index: 9999999999999999999999; display: flex; flex-direction: column; gap: 1rem;
         }
 
         .nx-toast {
@@ -1643,9 +1643,17 @@
             }
         }
 
-        function recoverApp() {
-            const inputAnswer = document.getElementById('lock-answer-input').value;
-            if (inputAnswer.toLowerCase().trim() === state.recovery?.answer?.toLowerCase().trim()) {
+              function recoverApp() {
+            const inputAnswer = document.getElementById('lock-answer-input').value.toLowerCase().trim();
+            const savedAnswer = state.recovery?.answer?.toLowerCase().trim();
+
+            // Prevent login if no answer record exists
+            if (!savedAnswer || savedAnswer === "") {
+                triggerToast("Account recovery is not configured.");
+                return;
+            }
+
+            if (inputAnswer === savedAnswer) {
                 triggerToast("Identity Verified. Access Granted.");
                 closeMod('mod-lock');
                 toggleRecovery(false);
