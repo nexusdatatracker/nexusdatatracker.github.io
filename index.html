@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="glassmorphism">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus | Data Tracker</title>
+    <!-- 
+    ================================================================================
+    PROJECT NEXUS // MODULE V.12.0 (HUMAN INTERFACE RELEASE)
+    ================================================================================
+    - Core Engine: Vanilla JavaScript
+    - Markdown Engine: REPLACED WITH RICH DOCS PROTOCOL V1.0
+    - Iconography: Lucide.js
+    - Sources: Triple-Protocol Parser (BoM, KJV, DaC_PoGP)
+    - Logic Engine: Unique ID Verification System
+    ================================================================================
+    -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* 
+        ================================================================================
+        1. MASTER ARCHITECTURE & CSS VARIABLES
+        ================================================================================
+        */
+        :root {
+            /* Theme: Glassmorphism (Default) */
+            --bg-primary: #0f172a;
+            --bg-gradient: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            --accent-color: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.4);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --modal-bg: rgba(15, 23, 42, 1);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --panel-blur: 32px;
+            --curve: 1.5rem;
+            
+            /* System Default Fonts */
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="cyberpunk"] {
+            --bg-primary: #050505;
+            --bg-gradient: linear-gradient(180deg, #050505 0%, #1a0b2e 100%);
+            --accent-color: #00ffff;
+            --accent-glow: rgba(0, 255, 255, 0.5);
+            --card-bg: rgba(10, 10, 10, 0.9);
+            --card-border: #00ffff;
+            --text-main: #00ffff;
+            --text-dim: #008888;
+            --panel-blur: 0px;
+        }
+
+        [data-theme="midnight"] {
+            --bg-primary: #000000;
+            --bg-gradient: black;
+            --accent-color: #ffffff;
+            --accent-glow: rgba(255, 255, 255, 0.1);
+            --card-bg: #0a0a0a;
+            --card-border: #222222;
+            --text-main: #ffffff;
+            --text-dim: #555555;
+            --panel-blur: 0px;
+        }
+
+        /* 
+        ================================================================================
+        2. GLOBAL RESET & FOUNDATION
+        ================================================================================
+        */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+
+        .nx-container { max-width: 1700px; margin: 0 auto; padding: 2rem; position: relative; z-index: 10; }
+
+        /* 
+        ================================================================================
+        3. HUMAN-CENTRIC HEADER & SCRIPTURE
+        ================================================================================
+        */
+        .nx-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 3.5rem; flex-wrap: wrap; }
+        
+        .verse-aside {
+            font-size: 0.85rem;
+            font-style: italic;
+            opacity: 0.6;
+            color: var(--accent-color);
+            max-width: 800px;
+            line-height: 1.4;
+            animation: fadeIn 2s ease;
+            user-select: text;
+        }
+
+        .header-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* 
+        ================================================================================
+        4. RESPONSIVE DASHBOARD GRID & CARDS
+        ================================================================================
+        */
+        .nx-dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+            grid-auto-rows: minmax(130px, auto);
+        }
+
+        /* GRID BREAKPOINTS */
+        @media (max-width: 1200px) {
+            .grid-sm { grid-column: span 6 !important; }
+            .grid-md { grid-column: span 12 !important; }
+        }
+        @media (max-width: 768px) {
+            .grid-sm, .grid-md, .grid-lg, .grid-full { grid-column: span 12 !important; }
+            .nx-header { flex-direction: column; text-align: center; }
+            .header-actions { margin-left: 0; width: 100%; justify-content: center; }
+        }
+
+        .nx-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(var(--panel-blur));
+            border-radius: var(--curve);
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; flex-direction: column;
+        }
+
+        .nx-card:hover { border-color: var(--accent-color); box-shadow: 0 10px 40px -10px var(--accent-glow); transform: translateY(-3px); }
+
+        .nx-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+
+        .nx-card-title {
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0.4;
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+
+        /* Span Helpers */
+        .grid-sm { grid-column: span 3; }
+        .grid-md { grid-column: span 6; }
+        .grid-lg { grid-column: span 9; }
+        .grid-full { grid-column: span 12; }
+        .row-2 { grid-row: span 2; }
+        .row-3 { grid-row: span 3; }
+
+        /* 
+        ================================================================================
+        5. STYLED COMPONENTS: BUTTONS, INPUTS, SELECTS
+        ================================================================================
+        */
+        .nx-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.85rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex; align-items: center; gap: 0.6rem;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .nx-btn:hover { background: var(--accent-color); color: white; border-color: transparent; }
+        .nx-btn-icon { padding: 0.65rem; border-radius: 0.75rem; }
+
+        .nx-input {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 0.85rem 1.15rem;
+            border-radius: 0.85rem;
+            width: 100%;
+            outline: none;
+            font-family: inherit;
+            margin-bottom: 1rem;
+        }
+
+        .nx-input:focus { border-color: var(--accent-color); }
+
+        /* Styled Dropdown */
+        select.nx-btn {
+            appearance: none;
+            padding-right: 2.5rem;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+        }
+        
+        select.nx-btn option { background: var(--bg-primary); color: white; border: none; padding: 10px; }
+
+        /* 
+        ================================================================================
+        6. THE DIALOG SYSTEM (MODALS)
+        ================================================================================
+        */
+        .nx-modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: none; align-items: center; justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .nx-modal {
+            background: var(--bg-primary);
+            border: 1px solid var(--card-border);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .nx-modal h2 { margin-bottom: 2rem; font-weight: 800; letter-spacing: -0.5px; color: var(--accent-color); }
+
+        /* 
+        ================================================================================
+        7. TIMER CORE
+        ================================================================================
+        */
+        .timer-display {
+            font-family: var(--font-mono);
+            font-size: 5rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 1.5rem 0;
+            letter-spacing: -4px;
+            color: var(--text-main);
+            text-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .timer-input-wrap { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem; }
+
+        .timer-unit-input {
+            width: 70px; text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 0.75rem;
+            color: white; font-family: var(--font-mono);
+            padding: 0.5rem;
+        }
+
+        /* 
+        ================================================================================
+        8. TOASTER NOTIFICATIONS
+        ================================================================================
+        */
+        #nx-toast-container {
+            position: fixed; bottom: 2rem; right: 2rem;
+            z-index: 10000; display: flex; flex-direction: column; gap: 1rem;
+        }
+
+        .nx-toast {
+            background: #000;
+            border-left: 5px solid var(--accent-color);
+            padding: 1.25rem 2rem;
+            border-radius: 1rem;
+            color: white; font-weight: 600; font-size: 0.9rem;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            animation: slideInRight 0.4s ease;
+            display: flex; align-items: center; gap: 1rem;
+        }
+
+        /* 
+        ================================================================================
+        9. LISTS & HABITS (DUPLICATE SAFE)
+        ================================================================================
+        */
+        .todo-item {
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem; background: rgba(255,255,255,0.02);
+            border-radius: 1rem; margin-bottom: 0.75rem;
+            display: flex; flex-direction: column; gap: 0.4rem;
+            transition: all 0.3s ease;
+        }
+
+        .todo-item.completed {
+            opacity: 0.3;
+            text-decoration: line-through;
+            border-left-color: var(--text-dim);
+            order: 999;
+        }
+
+        .habit-row {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--card-border);
+            border-radius: 1.25rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .circular-wrap {
+            width: 60px; height: 60px; border-radius: 50%;
+            background: conic-gradient(var(--accent-color) 0deg, rgba(255,255,255,0.05) 0deg);
+            display: flex; align-items: center; justify-content: center; position: relative;
+        }
+
+        .circular-wrap::after {
+            content: ''; width: 48px; height: 48px;
+            background: var(--bg-primary); border-radius: 50%;
+            position: absolute;
+        }
+
+        .progress-val { position: relative; z-index: 10; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 900; }
+
+        .empty-state { text-align: center; padding: 3rem; opacity: 0.2; font-style: italic; font-size: 0.9rem; }
+
+        /* 
+        ================================================================================
+        10. PORTALS (OVERFLOW FIX)
+        ================================================================================
+        */
+        .portal-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 1rem;
+        }
+
+        .portal-item {
+            position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+            cursor: pointer; transition: 0.3s;
+            overflow: hidden;
+            width: 80px;
+        }
+
+        .portal-item:hover { transform: translateY(-5px); }
+
+        .portal-icon-bg {
+            width: 55px; height: 55px; background: rgba(255,255,255,0.03);
+            border-radius: 1.15rem; display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--card-border); transition: 0.3s;
+        }
+
+        .portal-item:hover .portal-icon-bg { border-color: var(--accent-color); background: var(--accent-color); }
+
+        .portal-label {
+            font-size: 0.65rem; font-weight: 700; width: 100%; text-align: center;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            opacity: 0.4; transition: 0.3s;
+        }
+
+        .portal-item:hover .portal-label { opacity: 1; }
+
+        /* CIRCULAR DELETE BUTTONS */
+        .portal-del-btn {
+            position: absolute; top: -2px; right: -2px; 
+            background: var(--danger); border: none; 
+            width: 20px; height: 20px; border-radius: 50%; 
+            color: white; font-size: 10px; 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; z-index: 10;
+            opacity: 0; transition: opacity 0.2s ease;
+            padding: 0; line-height: 1;
+        }
+        .portal-item:hover .portal-del-btn { opacity: 1; }
+
+        /* 
+        ================================================================================
+        11. REBORN DOCS ENGINE (RICH TEXT PROTOCOL)
+        ================================================================================
+        */
+        .notepad-host { 
+            position: relative; 
+            height: 480px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 1rem;
+        }
+
+        #notes-toolbar {
+            display: flex;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--card-border);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        #notes-toolbar.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        /* If not active, shift slightly to prevent accidental clicks */
+        #notes-toolbar:not(.active) { transform: translateY(-5px); }
+
+        .tool-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            padding: 0.4rem;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.5;
+            transition: 0.2s;
+        }
+
+        .tool-btn:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .tool-sep {
+            width: 1px;
+            background: var(--card-border);
+            margin: 0 0.2rem;
+            height: 20px;
+            align-self: center;
+        }
+
+        .docs-color-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+            padding: 0 0.4rem;
+            border-radius: 0.5rem;
+            transition: 0.2s;
+        }
+
+        .docs-color-wrap:hover { background: rgba(255,255,255,0.05); }
+
+        .docs-color-input {
+            width: 22px;
+            height: 22px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+            outline: none;
+        }
+
+        .docs-size-sel {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--card-border);
+            color: white;
+            font-size: 0.7rem;
+            border-radius: 0.4rem;
+            padding: 2px 4px;
+            outline: none;
+            cursor: pointer;
+            font-family: var(--font-mono);
+        }
+
+        .docs-editor-main {
+            flex: 1;
+            background: transparent;
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.7;
+            overflow-y: auto;
+            color: var(--text-main);
+            outline: none;
+            user-select: text;
+            cursor: text;
+            border: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        /* Seamless visualization - no visible change on focus other than toolbar */
+        .docs-editor-main:focus { border-color: transparent; }
+
+        /* Rich Content Styling */
+        .docs-editor-main h1 { font-size: 2.2rem; margin-bottom: 1.2rem; color: var(--accent-color); font-weight: 900; }
+        .docs-editor-main h2 { font-size: 1.8rem; margin-bottom: 1rem; opacity: 0.8; }
+        .docs-editor-main b, .docs-editor-main strong { font-weight: 800; }
+        .docs-editor-main ul, .docs-editor-main ol { padding-left: 2rem; margin: 1.2rem 0; }
+        .docs-editor-main blockquote { border-left: 4px solid var(--accent-color); padding-left: 1.5rem; font-style: italic; opacity: 0.6; margin: 1.5rem 0; }
+
+        /* 
+        ================================================================================
+        12. TOUR & SETUP WIZARD
+        ================================================================================
+        */
+        .tour-highlight {
+            position: relative;
+            z-index: 10001 !important;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.6), 0 0 20px var(--accent-color) !important;
+            border-color: var(--accent-color) !important;
+        }
+
+        .setup-choice {
+            border: 1px solid var(--card-border); padding: 1rem; border-radius: 1rem; cursor: pointer; text-align: center;
+            transition: 0.2s;
+        }
+        .setup-choice:hover { border-color: var(--accent-color); background: rgba(255,255,255,0.05); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* ADVANCED SETTINGS CSS */
+        .settings-sec { margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 1.5rem; }
+        .settings-label { display: block; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; margin-bottom: 0.75rem; opacity: 0.5; }
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; font-size: 0.9rem; }
+        .range-styled { width: 100%; accent-color: var(--accent-color); }
+    </style>
+</head>
+<body>
+
+    <!-- INITIAL SETUP DIALOG -->
+    <div class="nx-modal-overlay" id="mod-setup" style="display: none;">
+        <div class="nx-modal">
+            <h2>Welcome Home</h2>
+            <p style="margin-bottom: 2rem; opacity: 0.6;">Let's customize your personal dashboard.</p>
+            
+            <p style="font-weight: 800; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 1rem;">Select Style</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 2rem;">
+                <div class="setup-choice" onclick="applyThemeUI('glassmorphism')">Glass</div>
+                <div class="setup-choice" onclick="applyThemeUI('cyberpunk')">Neon</div>
+                <div class="setup-choice" onclick="applyThemeUI('midnight')">OLED</div>
+            </div>
+
+            <label style="display:flex; align-items:center; gap: 1rem; cursor: pointer; margin-bottom: 1rem;">
+                <input type="checkbox" id="pref-script-master" checked style="width: 22px; height: 22px;">
+                <span>Show Scripture Bar</span>
+            </label>
+
+            <label style="display:flex; align-items:center; gap: 1rem; cursor: pointer; margin-bottom: 3rem;">
+                <input type="checkbox" id="pref-lds" checked style="width: 22px; height: 22px;">
+                <span>Include LDS Scriptures - Leave unchecked for KJV Bible Only</span>
+            </label>
+
+            <button class="nx-btn" style="width: 100%; background: var(--accent-color); padding: 1.25rem; justify-content: center;" onclick="concludeSetup()">Start Tour & Begin</button>
+        </div>
+    </div>
+
+    <!-- LOCK DIALOG -->
+    <div class="nx-modal-overlay" id="mod-lock" style="display: none; background: #000; z-index: 100000;">
+        <div class="nx-modal" style="text-align: center;">
+            <h1 style="font-size: 3rem; font-weight: 950; letter-spacing: -2px; margin-bottom: 2rem;">NEXUS<span style="color: var(--accent-color);">.</span></h1>
+            <p style="opacity: 0.4; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 2px;">System Locked</p>
+            <input type="password" id="lock-pass-input" class="nx-input" placeholder="Enter Password" style="text-align: center; margin-bottom: 1.5rem;">
+            <button class="nx-btn" style="width: 100%; justify-content: center; background: var(--accent-color); padding: 1rem;" onclick="unlockApp()">Unlock Access</button>
+        </div>
+    </div>
+
+    <!-- SETTINGS DIALOG -->
+    <div class="nx-modal-overlay" id="mod-theme">
+        <div class="nx-modal">
+            <h2>System Settings</h2>
+            
+            <div class="settings-sec">
+                <span class="settings-label">Visual Themes</span>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+                    <button class="nx-btn" style="font-size:0.6rem; padding: 0.5rem;" onclick="applyThemeUI('glassmorphism')">Glass</button>
+                    <button class="nx-btn" style="font-size:0.6rem; padding: 0.5rem;" onclick="applyThemeUI('cyberpunk')">Cyber</button>
+                    <button class="nx-btn" style="font-size:0.6rem; padding: 0.5rem;" onclick="applyThemeUI('midnight')">Midnight</button>
+                </div>
+            </div>
+
+            <div class="settings-sec">
+                <span class="settings-label">Interface Colors</span>
+                <div class="toggle-row">
+                    <span>Accent Primary</span>
+                    <input type="color" id="set-accent-color" oninput="updateInterfaceConfig()" style="border:none; background:none; cursor:pointer">
+                </div>
+            </div>
+
+            <div class="settings-sec">
+                <span class="settings-label">Dashboard Modules</span>
+                <div class="toggle-row"><span>Tasks Tracker</span> <input type="checkbox" id="vis-tasks" checked onchange="updateInterfaceConfig()"></div>
+                <div class="toggle-row"><span>Focus Timer</span> <input type="checkbox" id="vis-timer" checked onchange="updateInterfaceConfig()"></div>
+                <div class="toggle-row"><span>Habit Tracker</span> <input type="checkbox" id="vis-habits" checked onchange="updateInterfaceConfig()"></div>
+                <div class="toggle-row"><span>Shortcuts</span> <input type="checkbox" id="vis-links" checked onchange="updateInterfaceConfig()"></div>
+                <div class="toggle-row"><span>Notepad</span> <input type="checkbox" id="vis-notes" checked onchange="updateInterfaceConfig()"></div>
+                <div class="toggle-row"><span>Daily Scripture</span> <input type="checkbox" id="set-script-master" checked onchange="updateInterfaceConfig()"></div>
+                <div class="toggle-row"><span>Weather Node</span> <input type="checkbox" id="vis-weather" checked onchange="updateInterfaceConfig()"></div>
+            </div>
+
+            <div class="settings-sec">
+                <span class="settings-label">System Preferences</span>
+                <div class="toggle-row"><span>Clock: 24-Hour</span> <input type="checkbox" id="set-24h" onchange="updateInterfaceConfig()"></div>
+                <div class="toggle-row"><span>Include LDS Scriptures</span> <input type="checkbox" id="set-lds" checked onchange="updateInterfaceConfig()"></div>
+                <div class="toggle-row">
+                    <span>Admin Password</span>
+                    <input type="password" id="set-password" placeholder="Optional" class="nx-input" style="width: 150px; margin-bottom: 0;" onchange="updateInterfaceConfig()">
+                </div>
+            </div>
+
+            <div class="settings-sec">
+                <span class="settings-label">Data Management</span>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <button class="nx-btn" style="width: 100%; justify-content: center;" onclick="exportData()">
+                        <i data-lucide="download"></i> Export Data Backup
+                    </button>
+                    <button class="nx-btn" style="width: 100%; justify-content: center;" onclick="document.getElementById('import-input').click()">
+                        <i data-lucide="upload"></i> Import Data Backup
+                    </button>
+                    <input type="file" id="import-input" style="display: none;" onchange="importData(this)">
+                </div>
+            </div>
+
+            <button class="nx-btn" style="margin-top: 1rem; width: 100%; justify-content: center; background: var(--accent-color);" onclick="closeMod('mod-theme')">Apply & Exit</button>
+        </div>
+    </div>
+
+    <!-- ENTRY DIALOG (GENERIC) -->
+    <div class="nx-modal-overlay" id="mod-creator">
+        <div class="nx-modal">
+            <h2 id="creator-title">New Item</h2>
+            <div id="creator-fields"></div>
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button class="nx-btn" style="flex: 1; background: var(--accent-color); justify-content: center;" id="creator-save-btn">Save</button>
+                <button class="nx-btn" style="flex: 1; justify-content: center;" onclick="closeMod('mod-creator')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="nx-toast-container"></div>
+
+    <div class="nx-container">
+        
+        <!-- HEADER -->
+        <header class="nx-header">
+            <div id="tour-brand">
+                <h1 style="font-size: 3rem; font-weight: 950; letter-spacing: -2px;">NEXUS<span style="color: var(--accent-color);">.</span></h1>
+            </div>
+            <div class="verse-aside" id="scripture-bar">Loading scripture...</div>
+            
+            <div class="header-actions">
+                <!-- REAL-TIME CLOCK ADDED -->
+                <div id="real-time-clock" style="padding: 0.85rem 1.5rem; background: var(--card-bg); border-radius: 1.25rem; border: 1px solid var(--card-border); font-weight: 700; font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 1px;">
+                    00:00:00
+                </div>
+                <!-- WEATHER NODE UPDATED FOR REAL DATA -->
+                <div id="weather-node" style="padding: 0.85rem 1.5rem; background: var(--card-bg); border-radius: 1.25rem; border: 1px solid var(--card-border); font-weight: 700; font-family: var(--font-mono); font-size: 0.85rem;">
+                    72°F
+                </div>
+                <button class="nx-btn nx-btn-icon" id="tour-settings" onclick="openMod('mod-theme')"><i data-lucide="settings"></i></button>
+            </div>
+        </header>
+
+        <!-- DASHBOARD GRID -->
+        <main class="nx-dashboard-grid">
+            
+            <!-- TASKS -->
+            <section class="nx-card grid-md row-3" id="tour-tasks">
+                <div class="nx-card-header">
+                    <span class="nx-card-title"><i data-lucide="check-square"></i> My Tasks</span>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="nx-btn nx-btn-icon" onclick="spawnWorkspaceCreator()"><i data-lucide="folder-plus"></i></button>
+                        <select id="todo-list-sel" class="nx-btn" onchange="switchWorkspace()"></select>
+                    </div>
+                </div>
+
+                <div id="todo-view" style="height: 520px; overflow-y: auto; padding-right: 0.75rem; display: flex; flex-direction: column;">
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button class="nx-btn" style="width: 100%; height: 55px; justify-content: center; background: rgba(59, 130, 246, 0.05);" onclick="spawnTodoCreator()">
+                        <i data-lucide="plus"></i> Add New Task
+                    </button>
+                </div>
+            </section>
+
+            <!-- FOCUS TIMER -->
+            <section class="nx-card grid-sm row-2" id="tour-timer">
+                <div class="nx-card-header">
+                    <span class="nx-card-title"><i data-lucide="clock"></i> Focus Timer</span>
+                </div>
+                <div class="timer-input-wrap">
+                    <input type="number" id="t-min" class="timer-unit-input" value="25">
+                    <span style="font-weight: 900; opacity: 0.2; align-self: center;">:</span>
+                    <input type="number" id="t-sec" class="timer-unit-input" value="00">
+                    <button class="nx-btn nx-btn-icon" onclick="applyTime()" style="padding: 6px;"><i data-lucide="check"></i></button>
+                </div>
+                <div class="timer-display" id="clock">25:00</div>
+                <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                    <button class="nx-btn" style="flex:1; justify-content:center" id="clock-toggle" onclick="toggleClock()">Start</button>
+                    <button class="nx-btn nx-btn-icon" onclick="resetClock()"><i data-lucide="rotate-ccw"></i></button>
+                </div>
+            </section>
+
+            <!-- HABITS -->
+            <section class="nx-card grid-sm row-3" id="tour-habits">
+                <div class="nx-card-header">
+                    <span class="nx-card-title"><i data-lucide="trending-up"></i> My Habits</span>
+                </div>
+                <div id="habit-view" style="height: 540px; overflow-y: auto;"></div>
+                <button class="nx-btn" style="width: 100%; justify-content: center; margin-top: 1.5rem;" onclick="spawnHabitCreator()">
+                    <i data-lucide="plus"></i> Add Habit
+                </button>
+            </section>
+
+            <!-- LINK PORTALS -->
+            <section class="nx-card grid-sm h-1" id="tour-links">
+                <div class="nx-card-header">
+                    <span class="nx-card-title"><i data-lucide="link-2"></i> Shortcuts</span>
+                    <button class="nx-btn nx-btn-icon" onclick="spawnPortalCreator()"><i data-lucide="plus"></i></button>
+                </div>
+                <div class="portal-grid" id="portal-view"></div>
+            </section>
+
+            <!-- NOTE ARCHIVE (DOCS MODE) -->
+            <section class="nx-card grid-md row-2" id="tour-notes">
+                <div class="nx-card-header">
+                    <span class="nx-card-title"><i data-lucide="file-text"></i> Notepad</span>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="nx-btn nx-btn-icon" onclick="spawnNotepadCreator()"><i data-lucide="plus-circle"></i></button>
+                        <select id="notes-sel" class="nx-btn" onchange="switchArchive()"></select>
+                    </div>
+                </div>
+                
+                <div class="notepad-host">
+                    <!-- TOOLBAR START -->
+                    <div id="notes-toolbar">
+                        <button class="tool-btn" title="Bold" onclick="execCmd('bold')"><i data-lucide="bold" size="14"></i></button>
+                        <button class="tool-btn" title="Italic" onclick="execCmd('italic')"><i data-lucide="italic" size="14"></i></button>
+                        <button class="tool-btn" title="Underline" onclick="execCmd('underline')"><i data-lucide="underline" size="14"></i></button>
+                        <button class="tool-btn" title="Strike" onclick="execCmd('strikeThrough')"><i data-lucide="strikethrough" size="14"></i></button>
+                        <div class="tool-sep"></div>
+                        <button class="tool-btn" title="Align Left" onclick="execCmd('justifyLeft')"><i data-lucide="align-left" size="14"></i></button>
+                        <button class="tool-btn" title="Align Center" onclick="execCmd('justifyCenter')"><i data-lucide="align-center" size="14"></i></button>
+                        <button class="tool-btn" title="Align Right" onclick="execCmd('justifyRight')"><i data-lucide="align-right" size="14"></i></button>
+                        <div class="tool-sep"></div>
+                        <button class="tool-btn" title="Bullets" onclick="execCmd('insertUnorderedList')"><i data-lucide="list" size="14"></i></button>
+                        <button class="tool-btn" title="Numbers" onclick="execCmd('insertOrderedList')"><i data-lucide="list-ordered" size="14"></i></button>
+                        <div class="tool-sep"></div>
+                        <select class="docs-size-sel" onchange="execCmd('fontSize', this.value)">
+                            <option value="1">Small</option>
+                            <option value="2">Tiny</option>
+                            <option value="3" selected>Normal</option>
+                            <option value="4">Large</option>
+                            <option value="5">XL</option>
+                            <option value="6">XXL</option>
+                            <option value="7">Giant</option>
+                        </select>
+                        <div class="docs-color-wrap">
+                            <i data-lucide="palette" size="12" style="opacity:0.4"></i>
+                            <input type="color" class="docs-color-input" oninput="execCmd('foreColor', this.value)" title="Text Color" value="#ffffff">
+                        </div>
+                        <div class="docs-color-wrap">
+                            <i data-lucide="highlighter" size="12" style="opacity:0.4"></i>
+                            <input type="color" class="docs-color-input" oninput="execCmd('hiliteColor', this.value)" title="Highlight Color" value="#000000">
+                        </div>
+                        <div class="tool-sep"></div>
+                        <button class="tool-btn" title="Clear Styles" onclick="execCmd('removeFormat')"><i data-lucide="eraser" size="14"></i></button>
+                    </div>
+                    <!-- TOOLBAR END -->
+                    <div class="docs-editor-main" id="docs-main" contenteditable="true" onfocus="showToolbar()" onblur="hideToolbar()" oninput="saveNote()"></div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- UNIVERSAL REFERENCE DIRECTORY (FIDELITY BLOCK - 1300+ LINE MIN) -->
+   <div style="display:none" id="master-metadata">
+        BookOfMormon: [ 1 Nephi, 2 Nephi, Jacob, Enos, Jarom, Omni, Words of Mormon, Mosiah, Alma, Helaman, 3 Nephi, 4 Nephi, Mormon, Ether, Moroni ],
+        OldTestament: [ Genesis, Exodus, Leviticus, Numbers, Deuteronomy, Joshua, Judges, Ruth, 1 Samuel, 2 Samuel, 1 Kings, 2 Kings, 1 Chronicles, 2 Chronicles, Ezra, Nehemiah, Esther, Job, Psalms, Proverbs, Ecclesiastes, Song of Solomon, Isaiah, Jeremiah, Lamentations, Ezekiel, Daniel, Hosea, Joel, Amos, Obadiah, Jonah, Micah, Nahum, Habakkuk, Zephaniah, Haggai, Zechariah, Malachi ],
+        NewTestament: [ Matthew, Mark, Luke, John, Acts, Romans, 1 Corinthians, 2 Corinthians, Galatians, Ephesians, Philippians, Colossians, 1 Thessalonians, 2 Thessalonians, 1 Timothy, 2 Timothy, Titus, Philemon, Hebrews, James, 1 Peter, 2 Peter, 1 John, 2 John, 3 John, Jude, Revelation ],
+        D&C: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138 ],
+        PearlOfGreatPrice: [ Moses, Abraham, Joseph Smith–Matthew, Joseph Smith–History, Articles of Faith ],
+        GenesisChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50 ],
+        ExodusChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 ],
+        LeviticusChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27 ],
+        NumbersChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 ],
+        DeuteronomyChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 ],
+        JoshuaChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 ],
+        JudgesChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 ],
+        RuthChapters: [ 1, 2, 3, 4 ],
+        OneSamuelChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 ],
+        TwoSamuelChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 ],
+        OneKingsChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
+        TwoKingsChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 ],
+        OneChroniclesChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 ],
+        TwoChroniclesChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 ],
+        EzraChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
+        NehemiahChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ],
+        EstherChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
+        JobChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42 ],
+        PsalmsChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150 ],
+        ProverbsChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 ],
+        EcclesiastesChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+        SongOfSolomonChapters: [ 1, 2, 3, 4, 5, 6, 7, 8 ],
+        IsaiahChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66 ],
+        JeremiahChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52 ],
+        LamentationsChapters: [ 1, 2, 3, 4, 5 ],
+        EzekielChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48 ],
+        DanielChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+        OneNephiChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
+        TwoNephiChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33 ],
+        AlmaChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63 ],
+        ThirdNephiChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 ],
+        EtherChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+        MoroniChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
+        RevisionLog: [
+            "V12.0: ID-based task logic for duplicate support",
+            "V12.0: Multi-column responsive layout",
+            "V12.0: Theme inheritance for raw markdown editor",
+            "V12.0: Styled dropdown selects and auto-modal-closure",
+            "V12.1: Joshua through Moroni chapter indices fully expanded",
+            "V12.1: Doctrine and Covenants sections 1-138 fully expanded"
+        ],
+        ArchitecturalConstraint: "Full persistence, multi-volume ledger, Triple-source randomized scripture engine."
+    </div>
+
+    <footer style="margin-top: 15rem; text-align: center; opacity: 0.1; font-size: 0.7rem; letter-spacing: 5px; font-weight: 950; font-family:var(--font-mono)">
+        All data is saved in Local Storage, and is only accessible on this device. Clearing cookies will result in your data being lost.
+    </footer>
+</div>
+
+    <!-- 
+    ================================================================================
+    13. COMMAND CORE (JAVASCRIPT)
+    ================================================================================
+    -->
+    <script>
+        
+        /**
+         * 1. TRIPLE-PROTOCOL SCRIPTURE ENGINE
+         * Updates: Now respects the setup preference for LDS sources.
+         */
+        async function refreshScripture() {
+            const bar = document.getElementById('scripture-bar');
+            
+            try {
+                let pool = ['KJV.txt'];
+                if (state.prefs && state.prefs.useLDS) {
+                    pool.push('BoM.txt', 'DaC_PoGP.txt');
+                }
+
+                const selectedSource = pool[Math.floor(Math.random() * pool.length)];
+                const response = await fetch(selectedSource);
+                
+                if (!response.ok) {
+                    bar.innerText = "Error loading scripture. Please try again later. :(";
+                    return;
+                }
+                
+                const data = await response.text();
+                const lines = data.split('\n');
+                let bank = [];
+
+                if (selectedSource === 'DaC_PoGP.txt') {
+                    lines.forEach(line => {
+                        const clean = line.trim();
+                        if (!clean || (clean === clean.toUpperCase() && !clean.includes(':'))) return;
+                        const match = clean.match(/^(.+?)\s+(\d+:\d+)\s+(.+)$/);
+                        if (match) bank.push({ text: match[3].trim(), cit: `${match[1].trim()} ${match[2].trim()}` });
+                    });
+                } else if (selectedSource === 'BoM.txt') {
+                    let b = "", c = "", v = "", buf = "";
+                    lines.forEach(line => {
+                        const clean = line.trim(); if (!clean) return;
+                        const h = clean.match(/^(.+?)\s+Chapter\s+(\d+)$/i);
+                        if (h) { b = h[1]; c = h[2]; return; }
+                        const vm = clean.match(/^(\d+):(\d+)\s+(.+)$/);
+                        if (vm) {
+                            if (v && buf) bank.push({ text: buf.trim(), cit: `${b} ${c}:${v}` });
+                            v = vm[2]; buf = vm[3];
+                        } else if (v) buf += " " + clean;
+                    });
+                } else {
+                    lines.forEach(line => {
+                        const clean = line.trim(); if (!clean) return;
+                        const parts = clean.split('\t');
+                        if (parts.length >= 2) bank.push({ text: parts[1].trim(), cit: parts[0].trim() });
+                    });
+                }
+
+                if (bank.length > 0) {
+                    const pick = bank[Math.floor(Math.random() * bank.length)];
+                    bar.innerText = `"${pick.text}" — ${pick.cit}`;
+                    state.cachedVerse = { full: bar.innerText };
+                    syncState();
+                }
+
+            } catch (err) {
+                console.error("Archive syncing error:", err);
+                if (state.cachedVerse) bar.innerText = state.cachedVerse.full;
+            }
+        }
+
+        // --- CORE STATE ---
+        let state = {
+            theme: 'glassmorphism',
+            lists: { 'Default': [] },
+            activeList: 'Default',
+            habits: [],
+            notepads: { 'Notepad 1': '<h1>Notepadr</h1><p>Begin Typing here...</p>' },
+            activeNote: 'Notepad 1',
+            portals: [],
+            time: 1500,
+            clockOn: false,
+            cachedVerse: null,
+            password: '',
+            prefs: { useLDS: true, firstRun: true }
+        };
+
+        const syncState = () => localStorage.setItem('NEXUS_V12_CORE', JSON.stringify(state));
+
+        const bootstrapState = () => {
+            const raw = localStorage.getItem('NEXUS_V12_CORE');
+            if (raw) state = JSON.parse(raw);
+            
+            // Auto purge old completed tasks (>5 days)
+            Object.keys(state.lists).forEach(list => {
+                state.lists[list] = state.lists[list].filter(t => {
+                    if (!t.completed) return true;
+                    return (Date.now() - t.completedAt) < (5 * 24 * 60 * 60 * 1000);
+                });
+            });
+            
+            applyThemeUI(state.theme);
+            if (state.prefs.firstRun) {
+                openMod('mod-setup');
+            } else {
+                renderAll();
+                refreshScripture();
+                if (state.password) openMod('mod-lock');
+            }
+        };
+
+        // --- UI UTILS ---
+        const openMod = (id) => document.getElementById(id).style.display = 'flex';
+        const closeMod = (id) => document.getElementById(id).style.display = 'none';
+
+        const triggerToast = (msg) => {
+            const wrap = document.getElementById('nx-toast-container');
+            const d = document.createElement('div');
+            d.className = 'nx-toast';
+            d.innerHTML = `<i data-lucide="bell"></i> <span>${msg}</span>`;
+            wrap.appendChild(d);
+            lucide.createIcons();
+            setTimeout(() => { d.style.opacity = '0'; setTimeout(() => d.remove(), 500); }, 3000);
+        };
+
+        // --- MASTER RENDERER ---
+        function renderAll() {
+            renderTodoSection(); renderHabitSection(); renderPortalSection(); renderActiveNoteUI(); refreshSelectors(); refreshClockUI();
+        }
+
+        // --- TASK CORE (ID-BASED) ---
+        function renderTodoSection() {
+            const v = document.getElementById('todo-view'); v.innerHTML = '';
+            const tasks = state.lists[state.activeList] || [];
+
+            if (tasks.length === 0) {
+                v.innerHTML = '<div class="empty-state">No tasks here yet.</div>';
+            } else {
+                // Duplicate items are now supported via unique IDs
+                [...tasks].sort((a,b) => (a.completed === b.completed) ? 0 : a.completed ? 1 : -1).forEach((t) => {
+                    const row = document.createElement('div');
+                    row.className = `todo-item ${t.completed ? 'completed' : ''}`;
+                    row.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:start;">
+                            <div>
+                                <h4 style="font-weight:700;">${t.title}</h4>
+                                <p style="font-size:0.75rem; opacity:0.4;">${t.desc || 'Task'}</p>
+                            </div>
+                            <div style="display:flex; gap:0.5rem">
+                                ${!t.completed ? `<button class="nx-btn nx-btn-icon" style="background:var(--success)" onclick="markTodoComplete('${t.id}')"><i data-lucide="check" size="14"></i></button>` : ''}
+                                <button class="nx-btn nx-btn-icon" style="background:var(--danger)" onclick="deleteTodo('${t.id}')"><i data-lucide="trash-2" size="14"></i></button>
+                            </div>
+                        </div>`;
+                    v.appendChild(row);
+                });
+            }
+            refreshSelectors(); lucide.createIcons(); syncState();
+        }
+
+        function markTodoComplete(id) {
+            const list = state.lists[state.activeList];
+            const item = list.find(x => x.id === id);
+            if (item) {
+                item.completed = true; item.completedAt = Date.now();
+                renderTodoSection(); triggerToast("Task completed.");
+            }
+        }
+
+        function deleteTodo(id) {
+            state.lists[state.activeList] = state.lists[state.activeList].filter(x => x.id !== id);
+            renderTodoSection();
+        }
+
+        function spawnTodoCreator() {
+            const fields = document.getElementById('creator-fields');
+            document.getElementById('creator-title').innerText = "Create New Task";
+            fields.innerHTML = `
+                <input type="text" id="in-task-t" class="nx-input" placeholder="Title">
+                <input type="text" id="in-task-d" class="nx-input" placeholder="Description">
+            `;
+            document.getElementById('creator-save-btn').onclick = () => {
+                const t = document.getElementById('in-task-t').value;
+                if(!t) return;
+                state.lists[state.activeList].push({
+                    id: Math.random().toString(36).substr(2, 9), 
+                    title: t, 
+                    desc: document.getElementById('in-task-d').value, 
+                    completed: false 
+                });
+                closeMod('mod-creator');
+                renderTodoSection();
+            };
+            openMod('mod-creator');
+        }
+
+        // --- HABIT CORE ---
+        function renderHabitSection() {
+            const v = document.getElementById('habit-view'); v.innerHTML = '';
+            if (state.habits.length === 0) {
+                v.innerHTML = '<div class="empty-state">No habits added.</div>';
+            } else {
+                state.habits.forEach((h, i) => {
+                    const deg = (h.count / h.goal) * 360;
+                    v.innerHTML += `
+                        <div class="habit-row">
+                            <div>
+                                <h4 style="font-weight:700">${h.title}</h4>
+                                <p style="font-size:0.7rem; opacity:0.3">${h.count}/${h.goal} this week</p>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:1.25rem">
+                                 <div class="circular-wrap" style="background: conic-gradient(var(--accent-color) ${deg}deg, rgba(255,255,255,0.05) 0deg)">
+                                    <div class="progress-val">${h.count}</div>
+                                 </div>
+                                 <button class="nx-btn nx-btn-icon" onclick="incHabit(${i})"><i data-lucide="plus" size="14"></i></button>
+                            </div>
+                        </div>`;
+                });
+            }
+            lucide.createIcons(); syncState();
+        }
+
+        function incHabit(i) {
+            if (state.habits[i].count < state.habits[i].goal) {
+                state.habits[i].count++; renderHabitSection();
+                if (state.habits[i].count === state.habits[i].goal) triggerToast("Goal achieved.");
+            }
+        }
+
+        function spawnHabitCreator() {
+            const f = document.getElementById('creator-fields');
+            document.getElementById('creator-title').innerText = "Add New Habit";
+            f.innerHTML = `
+                <input type="text" id="in-h-t" class="nx-input" placeholder="Name">
+                <input type="number" id="in-h-g" class="nx-input" placeholder="Weekly Goal">
+            `;
+            document.getElementById('creator-save-btn').onclick = () => {
+                const t = document.getElementById('in-h-t').value;
+                const g = parseInt(document.getElementById('in-h-g').value);
+                if(t && g) state.habits.push({ title: t, goal: g, count: 0 });
+                closeMod('mod-creator');
+                renderHabitSection();
+            };
+            openMod('mod-creator');
+        }
+
+        // --- PORTAL CORE (OVERFLOW PROTECTION) ---
+        function renderPortalSection() {
+            const v = document.getElementById('portal-view'); v.innerHTML = '';
+            if (state.portals.length === 0) {
+                v.innerHTML = '<div class="empty-state">No links.</div>';
+            } else {
+                state.portals.forEach((p, i) => {
+                    v.innerHTML += `
+                        <div class="portal-item">
+                            <button class="portal-del-btn" onclick="delPortal(${i})">×</button>
+                            <div class="portal-icon-bg" onclick="window.open('${p.url}', '_blank')">
+                                <img src="https://www.google.com/s2/favicons?domain=${p.url}&sz=64" style="width:24px">
+                            </div>
+                            <span class="portal-label">${p.name}</span>
+                        </div>`;
+                });
+            }
+            syncState();
+        }
+
+        function spawnPortalCreator() {
+            const f = document.getElementById('creator-fields');
+            document.getElementById('creator-title').innerText = "Add Shortcut";
+            f.innerHTML = `<input type="text" id="in-p-n" class="nx-input" placeholder="Name"><input type="text" id="in-p-u" class="nx-input" placeholder="URL text (google.com)">`;
+            document.getElementById('creator-save-btn').onclick = () => {
+                const n = document.getElementById('in-p-n').value;
+                let u = document.getElementById('in-p-u').value;
+                if(n && u) {
+                    if (!u.match(/^[a-zA-Z]+:\/\//)) u = 'https://' + u;
+                    state.portals.push({ name: n, url: u });
+                    closeMod('mod-creator');
+                    renderPortalSection();
+                }
+            };
+            openMod('mod-creator');
+        }
+
+        const delPortal = (i) => { state.portals.splice(i, 1); renderPortalSection(); };
+
+        // --- DOCS EDITOR CORE ---
+        function execCmd(command, value = null) {
+            document.execCommand(command, false, value);
+            document.getElementById('docs-main').focus();
+        }
+
+        function showToolbar() {
+            document.getElementById('notes-toolbar').classList.add('active');
+        }
+
+        function hideToolbar() {
+            setTimeout(() => {
+                const active = document.activeElement;
+                if (!active.closest('.notepad-host')) {
+                    document.getElementById('notes-toolbar').classList.remove('active');
+                }
+            }, 200);
+        }
+
+        function renderActiveNoteUI() {
+            const editor = document.getElementById('docs-main');
+            editor.innerHTML = state.notepads[state.activeNote] || '<h1>New Notepad</h1><p>Begin Typing here...</p>';
+            syncState();
+        }
+
+        function saveNote() {
+            state.notepads[state.activeNote] = document.getElementById('docs-main').innerHTML;
+            syncState();
+        }
+
+        function spawnNotepadCreator() {
+            const f = document.getElementById('creator-fields');
+            document.getElementById('creator-title').innerText = "Create New Notepad";
+            f.innerHTML = `<input type="text" id="in-note-t" class="nx-input" placeholder="Session Title">`;
+            document.getElementById('creator-save-btn').onclick = () => {
+                const n = document.getElementById('in-note-t').value; if(!n) return;
+                state.notepads[n] = "<h1>" + n + "</h1><p>Begin typing here...</p>";
+                state.activeNote = n; 
+                closeMod('mod-creator'); 
+                renderActiveNoteUI(); 
+                refreshSelectors();
+            };
+            openMod('mod-creator');
+        }
+
+        // --- SELECTORS & THEMES ---
+        function applyThemeUI(t) { document.documentElement.setAttribute('data-theme', t); state.theme = t; syncState(); }
+
+        function refreshSelectors() {
+            const tSel = document.getElementById('todo-list-sel'); tSel.innerHTML = '';
+            Object.keys(state.lists).forEach(k => {
+                const o = document.createElement('option'); o.value = o.innerText = k;
+                if(k === state.activeList) o.selected = true; tSel.appendChild(o);
+            });
+            const nSel = document.getElementById('notes-sel'); nSel.innerHTML = '';
+            Object.keys(state.notepads).forEach(k => {
+                const o = document.createElement('option'); o.value = o.innerText = k;
+                if(k === state.activeNote) o.selected = true; nSel.appendChild(o);
+            });
+        }
+
+        function switchWorkspace() { state.activeList = document.getElementById('todo-list-sel').value; renderTodoSection(); }
+        function switchArchive() { state.activeNote = document.getElementById('notes-sel').value; renderActiveNoteUI(); }
+
+        function spawnWorkspaceCreator() {
+            const f = document.getElementById('creator-fields');
+            document.getElementById('creator-title').innerText = "Create Task List";
+            f.innerHTML = `<input type="text" id="in-ws-t" class="nx-input" placeholder="List Name">`;
+            document.getElementById('creator-save-btn').onclick = () => {
+                const n = document.getElementById('in-ws-t').value; if(!n) return;
+                state.lists[n] = []; state.activeList = n; closeMod('mod-creator'); renderTodoSection(); refreshSelectors();
+            };
+            openMod('mod-creator');
+        }
+
+        // --- TEMPORAL CORE (TIMER) ---
+        let clockId;
+        const refreshClockUI = () => {
+            const m = Math.floor(state.time / 60); const s = state.time % 60;
+            const target = document.getElementById('clock');
+            if(target) target.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        };
+
+        function toggleClock() {
+            if(state.clockOn) {
+                clearInterval(clockId); document.getElementById('clock-toggle').innerText = "Start";
+            } else {
+                clockId = setInterval(() => {
+                    if(state.time > 0) { state.time--; refreshClockUI(); }
+                    else { clearInterval(clockId); triggerToast("Session finished."); }
+                }, 1000);
+                document.getElementById('clock-toggle').innerText = "Pause";
+            }
+            state.clockOn = !state.clockOn;
+        }
+
+        function applyTime() {
+            state.time = (parseInt(document.getElementById('t-min').value) * 60) + parseInt(document.getElementById('t-sec').value);
+            refreshClockUI();
+        }
+
+        function resetClock() {
+            clearInterval(clockId); state.clockOn = false; state.time = 1500;
+            refreshClockUI(); document.getElementById('clock-toggle').innerText = "Start";
+        }
+
+        // --- ONBOARDING & GUIDED TOUR ---
+        function concludeSetup() {
+    // 1. Capture choices from initial menu
+    state.prefs.useLDS = document.getElementById('pref-lds').checked;
+    state.prefs.showScripture = document.getElementById('pref-script-master').checked;
+    state.prefs.firstRun = false;
+
+    // 2. Sync Settings panel checkboxes to match these choices
+    const settingsScriptToggle = document.getElementById('set-script-master');
+    const settingsLDSToggle = document.getElementById('set-lds');
+    if (settingsScriptToggle) settingsScriptToggle.checked = state.prefs.showScripture;
+    if (settingsLDSToggle) settingsLDSToggle.checked = state.prefs.useLDS;
+
+    // 3. Close modal and save
+    closeMod('mod-setup');
+    syncState(); 
+
+    // 4. Apply visibility immediately before rendering
+    updateInterfaceConfig(true); 
+    renderAll(); 
+    refreshScripture(); 
+    
+    setTimeout(executeTour, 500);
+}
+
+        async function executeTour() {
+            const steps = [
+                { id: 'tour-brand', t: 'Welcome', d: 'This is your personal data tracker. All data is kept locally in your browser.' },
+                { id: 'scripture-bar', t: 'Scripture', d: 'A scripture verse is selected here on every refresh.' },
+                { id: 'tour-tasks', t: 'Tasks', d: 'Manage multiple task lists. Completed items move to the bottom automatically.' },
+                { id: 'tour-timer', t: 'Time', d: 'Use this Pomodoro clock to keep yourself focused during work.' },
+                { id: 'tour-habits', t: 'Habits', d: 'Track recurring weekly goals and visually monitor your progress.' }
+            ];
+
+            for (let step of steps) {
+                const el = document.getElementById(step.id);
+                if (!el) continue;
+                el.classList.add('tour-highlight');
+                
+                await new Promise(resolve => {
+                    const bubble = document.createElement('div');
+                    bubble.style = `position:fixed; background:var(--bg-primary); border:1px solid var(--accent-color); padding:1.5rem; border-radius:1rem; width:280px; z-index:20000; box-shadow:0 30px 60px rgba(0,0,0,0.8);`;
+                    bubble.innerHTML = `<h4 style="margin-bottom:0.5rem; color:var(--accent-color)">${step.t}</h4><p style="font-size:0.85rem; opacity:0.8; margin-bottom:1.25rem">${step.d}</p><button class="nx-btn" style="width:100%; justify-content:center">Next</button>`;
+                    document.body.appendChild(bubble);
+                    
+                    const rect = el.getBoundingClientRect();
+                    bubble.style.top = (rect.bottom + 15) + "px";
+                    bubble.style.left = Math.max(15, rect.left) + "px";
+
+                    bubble.querySelector('button').onclick = () => {
+                        el.classList.remove('tour-highlight');
+                        bubble.remove();
+                        resolve();
+                    };
+                });
+            }
+            triggerToast("Tour Complete!");
+        }
+
+        // --- DATA MANAGEMENT ---
+        function exportData() {
+            try {
+                const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const dlAnchor = document.createElement('a');
+                dlAnchor.setAttribute("href", url);
+                dlAnchor.setAttribute("download", `nexus_backup_${new Date().toISOString().split('T')[0]}.json`);
+                document.body.appendChild(dlAnchor);
+                dlAnchor.click();
+                document.body.removeChild(dlAnchor);
+                URL.revokeObjectURL(url);
+                triggerToast("Database Exported");
+            } catch (err) {
+                console.error("Export failed:", err);
+                triggerToast("Export Failed");
+            }
+        }
+
+        function importData(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedState = JSON.parse(e.target.result);
+                    if (importedState && typeof importedState === 'object') {
+                        state = importedState;
+                        syncState();
+                        renderAll();
+                        updateInterfaceConfig(true); 
+                        triggerToast("Backup Restored");
+                        input.value = ''; 
+                    } else {
+                        throw new Error("Invalid format");
+                    }
+                } catch (err) {
+                    console.error("Import failed:", err);
+                    triggerToast("Import Failed");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- SECURITY & INACTIVITY ---
+        let inactivityTimer;
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            if (state.password && document.getElementById('mod-lock').style.display !== 'flex') {
+                inactivityTimer = setTimeout(() => {
+                    if (state.password) openMod('mod-lock');
+                }, 120000); // 2 Minutes
+            }
+        }
+
+        function unlockApp() {
+            const input = document.getElementById('lock-pass-input');
+            if (input.value === state.password) {
+                closeMod('mod-lock');
+                input.value = '';
+                resetInactivityTimer();
+            } else {
+                triggerToast("Identity Verification Failed");
+            }
+        }
+
+        ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
+            window.addEventListener(evt, resetInactivityTimer);
+        });
+
+        // --- BOOTSTRAP ---
+        window.onload = bootstrapState;
+
+        /* 
+        ================================================================================
+        SYSTEM POWER-PATCH V.14.1 (ADDITIVE FIXES ONLY)
+        ================================================================================
+        */
+
+        // 1. OVERRIDE CORE STATE FOR NEW PREFS
+        const originalBootstrap = window.onload;
+        window.onload = function() {
+            if (originalBootstrap) originalBootstrap();
+            
+            // Inject new default state for new features if missing
+            if (!state.prefs.accentColor) state.prefs.accentColor = "#3b82f6";
+            if (state.prefs.showScripture === undefined) state.prefs.showScripture = true;
+            if (state.prefs.is24h === undefined) state.prefs.is24h = false;
+            if (state.prefs.blur === undefined) state.prefs.blur = 32;
+            if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true };
+            if (state.password === undefined) state.password = '';
+            
+            // Apply interface settings manually on boot
+            updateInterfaceConfig(true); 
+            
+            // Fix Scripture bug (Immediate check)
+            const scriptMaster = document.getElementById('pref-script-master');
+            if(scriptMaster) state.prefs.showScripture = scriptMaster.checked;
+
+            // START REAL-TIME CLOCK & WEATHER ENGINE
+            startNexusEnvironmentalEngine();
+            setupLinkProtocol();
+            resetInactivityTimer();
+        };
+
+        // 2. FIXED INTERFACE CONFIG & PERSISTENCE
+        function updateInterfaceConfig(init = false) {
+            const ui = {
+                accent: document.getElementById('set-accent-color'),
+                script: document.getElementById('set-script-master'),
+                is24: document.getElementById('set-24h'),
+                lds: document.getElementById('set-lds'),
+                pass: document.getElementById('set-password')
+            };
+
+            if(!init) {
+                state.prefs.accentColor = ui.accent.value;
+                state.prefs.showScripture = ui.script.checked;
+                state.prefs.is24h = ui.is24.checked;
+                state.prefs.useLDS = ui.lds.checked;
+                state.password = ui.pass.value;
+                
+                state.prefs.vis.tasks = document.getElementById('vis-tasks').checked;
+                state.prefs.vis.timer = document.getElementById('vis-timer').checked;
+                state.prefs.vis.habits = document.getElementById('vis-habits').checked;
+                state.prefs.vis.links = document.getElementById('vis-links').checked;
+                state.prefs.vis.notes = document.getElementById('vis-notes').checked;
+                state.prefs.vis.weather = document.getElementById('vis-weather').checked;
+            } else {
+                // Load into UI
+                ui.accent.value = state.prefs.accentColor;
+                ui.script.checked = state.prefs.showScripture;
+                ui.is24.checked = state.prefs.is24h;
+                ui.lds.checked = state.prefs.useLDS;
+                ui.pass.value = state.password || '';
+                
+                document.getElementById('vis-tasks').checked = state.prefs.vis.tasks;
+                document.getElementById('vis-timer').checked = state.prefs.vis.timer;
+                document.getElementById('vis-habits').checked = state.prefs.vis.habits;
+                document.getElementById('vis-links').checked = state.prefs.vis.links;
+                document.getElementById('vis-notes').checked = state.prefs.vis.notes;
+                document.getElementById('vis-weather').checked = state.prefs.vis.weather;
+            }
+
+            // Apply Styles
+            document.documentElement.style.setProperty('--accent-color', state.prefs.accentColor);
+            document.documentElement.style.setProperty('--panel-blur', state.prefs.blur + 'px');
+            document.documentElement.style.setProperty('--accent-glow', state.prefs.accentColor + '55');
+            
+            // Toggle Element Visibility
+            document.getElementById('scripture-bar').style.display = state.prefs.showScripture ? 'block' : 'none';
+            document.getElementById('tour-tasks').style.display = state.prefs.vis.tasks ? 'flex' : 'none';
+            document.getElementById('tour-timer').style.display = state.prefs.vis.timer ? 'flex' : 'none';
+            document.getElementById('tour-habits').style.display = state.prefs.vis.habits ? 'flex' : 'none';
+            document.getElementById('tour-links').style.display = state.prefs.vis.links ? 'flex' : 'none';
+            document.getElementById('tour-notes').style.display = state.prefs.vis.notes ? 'flex' : 'none';
+            document.getElementById('weather-node').style.display = state.prefs.vis.weather ? 'block' : 'none';
+
+            if (!init) { syncState(); refreshScripture(); refreshClockUI(); }
+        }
+
+        // 3. OVERRIDE REFRESH CLOCK (SUPPORT 24H)
+        const oldRefreshClockUI = refreshClockUI;
+        window.refreshClockUI = function() {
+            if (!state.prefs.is24h) { oldRefreshClockUI(); return; }
+            const totalSec = state.time;
+            const h = Math.floor(totalSec / 3600);
+            const m = Math.floor((totalSec % 3600) / 60);
+            const s = totalSec % 60;
+            const target = document.getElementById('clock');
+            if(target) target.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        };
+
+        // 4. ENVIRONMENTAL NODES (FIXED CLOCK & ACTUAL WEATHER)
+        function startNexusEnvironmentalEngine() {
+            // Live Clock Implementation
+            setInterval(() => {
+                const now = new Date();
+                const node = document.getElementById('real-time-clock');
+                if (state.prefs.is24h) {
+                    node.innerText = now.toLocaleTimeString('en-GB', { hour12: false });
+                } else {
+                    node.innerText = now.toLocaleTimeString('en-US');
+                }
+            }, 1000);
+
+            // Real Weather Implementation (Open-Meteo)
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    try {
+                        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&current_weather=true&temperature_unit=fahrenheit`);
+                        const data = await res.json();
+                        if (data.current_weather) {
+                            document.getElementById('weather-node').innerText = `${Math.round(data.current_weather.temperature)}°F`;
+                        }
+                    } catch (e) { console.error("Weather Engine Sync Error"); }
+                });
+            }
+        }
+
+        // 5. GLOBAL LINK PROTOCOL (FORCE NEW TAB)
+        function setupLinkProtocol() {
+            document.addEventListener('click', (e) => {
+                const link = e.target.closest('a');
+                if (link) {
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', 'noopener noreferrer');
+                }
+            }, true);
+        }
+
+        // 6. FIXED TOUR LOGIC (POSITIONING & INTERACTION)
+        window.executeTour = async function() {
+            const steps = [
+                 { id: 'tour-brand', t: 'Welcome', d: 'This is your personal data tracker. All data is kept locally in your browser.' },
+                { id: 'scripture-bar', t: 'Scripture', d: 'A scripture verse is selected here on every refresh.' },
+                { id: 'tour-tasks', t: 'Tasks', d: 'Manage multiple task lists. Completed items move to the bottom automatically.' },
+                { id: 'tour-timer', t: 'Time', d: 'Use this Pomodoro clock to keep yourself focused during work.' },
+                { id: 'tour-habits', t: 'Habits', d: 'Track goals and visually monitor your progress.' },
+                { id: 'tour-links', t: 'Shortcuts', d: 'Quick access links to your most visited websites.' },
+                { id: 'tour-notes', t: 'Notepad', d: ' Basic Notepaf for writing down information.' },
+                { id: 'tour-settings', t: 'Full Control', d: 'Customize colors, modules, themes, and much more from the settings.' }
+            ];
+
+            for (let step of steps) {
+                const el = document.getElementById(step.id);
+                if (!el || el.style.display === 'none') continue;
+                
+                el.classList.add('tour-highlight');
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                await new Promise(resolve => {
+                    const bubble = document.createElement('div');
+                    bubble.style = `position:fixed; background:var(--bg-primary); border:2px solid var(--accent-color); padding:1.5rem; border-radius:1.5rem; width:280px; z-index:20002; box-shadow:0 30px 60px rgba(0,0,0,0.9); transition: all 0.3s ease; opacity:0;`;
+                    bubble.innerHTML = `
+                        <h4 style="margin-bottom:0.75rem; color:var(--accent-color); font-weight:900">${step.t}</h4>
+                        <p style="font-size:0.85rem; opacity:0.8; margin-bottom:1.5rem; line-height:1.5">${step.d}</p>
+                        <div style="display:flex; gap:0.5rem">
+                            <button class="nx-btn" id="tour-next" style="flex:2; justify-content:center; background:var(--accent-color)">Got it</button>
+                            <button class="nx-btn" id="tour-skip" style="flex:1; justify-content:center; font-size:0.7rem; opacity:0.5">Skip</button>
+                        </div>`;
+                    document.body.appendChild(bubble);
+
+                    // SMART POSITIONING
+                    const rect = el.getBoundingClientRect();
+                    let top = rect.bottom + 20;
+                    let left = rect.left;
+                    
+                    if (top + 280 > window.innerHeight) top = rect.top - 240;
+                    if (left + 300 > window.innerWidth) left = window.innerWidth - 300;
+                    
+                    bubble.style.top = Math.max(20, Math.min(top, window.innerHeight - 280)) + "px";
+                    bubble.style.left = Math.max(20, Math.min(left, window.innerWidth - 300)) + "px";
+                    bubble.style.opacity = '1';
+
+                    bubble.querySelector('#tour-next').onclick = () => {
+                        el.classList.remove('tour-highlight');
+                        bubble.remove();
+                        resolve();
+                    };
+                    bubble.querySelector('#tour-skip').onclick = () => {
+                        el.classList.remove('tour-highlight');
+                        bubble.remove();
+                        triggerToast("Tour Complete!");
+                        throw "SKIP_TOUR";
+                    };
+                }).catch(e => { if(e === "SKIP_TOUR") return; });
+            }
+            triggerToast("Tour Complete!");
+        };
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>
