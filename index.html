@@ -701,7 +701,7 @@
                 <span class="settings-label">Dashboard Modules</span>
                 <div class="toggle-row"><span>Tasks Tracker</span> <input type="checkbox" id="vis-tasks" checked onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row"><span>Focus Timer</span> <input type="checkbox" id="vis-timer" checked onchange="updateInterfaceConfig()"></div>
-                <div class="toggle-row"><span>Habit Tracker</span> <input type="checkbox" id="vis-habits" checked onchange="updateInterfaceConfig()"></div>
+                <div class="toggle-row"><span>Streak Tracker</span> <input type="checkbox" id="vis-habits" checked onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row"><span>Shortcuts</span> <input type="checkbox" id="vis-links" checked onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row"><span>Notepad</span> <input type="checkbox" id="vis-notes" checked onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row"><span>Countdown Timers</span> <input type="checkbox" id="vis-countdowns" checked onchange="updateInterfaceConfig()"></div>
@@ -830,11 +830,11 @@
             <!-- HABITS -->
             <section class="nx-card grid-sm" id="tour-habits">
                 <div class="nx-card-header">
-                    <span class="nx-card-title"><i data-lucide="trending-up"></i> My Habits</span>
+                    <span class="nx-card-title"><i data-lucide="trending-up"></i> Streaks</span>
                 </div>
                 <div id="habit-view"></div>
                 <button class="nx-btn" style="width: 100%; justify-content: center; margin-top: 1.5rem;" onclick="spawnHabitCreator()">
-                    <i data-lucide="plus"></i> Add Habit
+                    <i data-lucide="plus"></i> Add
                 </button>
             </section>
 
@@ -1439,23 +1439,24 @@
             }
         }
 
-        // --- HABIT CORE ---
+                        // --- STREAK COUNTER (HABIT CORE) ---
         function renderHabitSection() {
             const v = document.getElementById('habit-view'); 
             if(!v) return;
             v.innerHTML = '';
             
             if (state.habits.length === 0) {
-                v.innerHTML = '<div class="empty-state">No habits added.</div>';
+                v.innerHTML = '<div class="empty-state">No streaks added.</div>';
             } else {
                 state.habits.forEach((h, i) => {
-                    const deg = (h.count / h.goal) * 360;
+                    // Logic: The visual wheel fills to 360deg but caps there so it doesn't glitch when you exceed the goal
+                    const deg = Math.min((h.count / h.goal) * 360, 360);
                     v.innerHTML += `
                         <div class="habit-row">
                             <div class="habit-info-header">
                                 <div>
                                     <h4 style="font-weight:700; font-size: 1rem;">${h.title}</h4>
-                                    <p style="font-size:0.75rem; opacity:0.3; margin-top: 4px;">${h.count} / ${h.goal} cycles this week</p>
+                                    <p style="font-size:0.75rem; opacity:0.3; margin-top: 4px;">${h.count} / ${h.goal} cycles</p>
                                 </div>
                                 <div class="circular-wrap" style="background: conic-gradient(var(--accent-color) ${deg}deg, rgba(255,255,255,0.05) 0deg)">
                                     <div class="progress-val">${h.count}</div>
@@ -1466,10 +1467,10 @@
                                  <button class="nx-btn" title="Increment Progress" onclick="incHabit(${i})">
                                     <i data-lucide="plus" size="16"></i>
                                  </button>
-                                 <button class="nx-btn" title="Rename Habit" onclick="renameHabit(${i})">
+                                 <button class="nx-btn" title="Rename Streak" onclick="renameHabit(${i})">
                                     <i data-lucide="edit-3" size="16"></i>
                                  </button>
-                                 <button class="nx-btn" style="color:var(--danger)" title="Delete Habit" onclick="deleteHabit(${i})">
+                                 <button class="nx-btn" style="color:var(--danger)" title="Delete Streak" onclick="deleteHabit(${i})">
                                     <i data-lucide="trash-2" size="16"></i>
                                  </button>
                             </div>
@@ -1481,18 +1482,22 @@
         }
 
         function incHabit(i) {
-            if (state.habits[i].count < state.habits[i].goal) {
-                state.habits[i].count++; renderHabitSection();
-                if (state.habits[i].count === state.habits[i].goal) triggerToast("Goal achieved.");
+            // Infinite counting logic:
+            state.habits[i].count++; 
+            renderHabitSection();
+            
+            if (state.habits[i].count === state.habits[i].goal) {
+                triggerToast("Goal achieved! Keep going!");
             }
+            syncState();
         }
 
         function spawnHabitCreator() {
             const f = document.getElementById('creator-fields');
-            document.getElementById('creator-title').innerText = "Add New Habit";
+            document.getElementById('creator-title').innerText = "Add New Streak";
             f.innerHTML = `
                 <input type="text" id="in-h-t" class="nx-input" placeholder="Name">
-                <input type="number" id="in-h-g" class="nx-input" placeholder="Weekly Goal">
+                <input type="number" id="in-h-g" class="nx-input" placeholder="Milestone Goal">
             `;
             document.getElementById('creator-save-btn').onclick = () => {
                 const t = document.getElementById('in-h-t').value;
@@ -1505,15 +1510,16 @@
         }
 
         async function renameHabit(i) {
-            const newName = await prompt("New name for habit:", state.habits[i].title);
+            const newName = await prompt("New name for streak:", state.habits[i].title);
             if (newName) {
                 state.habits[i].title = newName;
                 renderHabitSection();
                 syncState();
             }
         }
+
         async function deleteHabit(i) {
-            if (await confirm(`Delete habit "${state.habits[i].title}"?`)) {
+            if (await confirm(`Delete streak "${state.habits[i].title}"?`)) {
                 state.habits.splice(i, 1);
                 renderHabitSection();
                 syncState();
