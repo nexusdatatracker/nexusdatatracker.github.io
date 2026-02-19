@@ -1106,8 +1106,8 @@
             }
 
             content.innerHTML = `
-                <div class="briefing-welcome">Good morning.</div>
-                <p style="opacity:0.6; font-size:0.85rem">Today will be great! The current temperature is  ${weather} F°.</p>
+    <div class="briefing-welcome">Good morning.</div>
+    <p style="opacity:0.6; font-size:0.85rem">Today will be great! The current temperature is ${weather}.</p>
                 
                 <div class="briefing-list">
                     <div class="briefing-item"><i data-lucide="target" size="14" style="color:var(--accent-color)"></i> <span>You have <strong>${pendingTasks}</strong> tasks remaining across your workspaces.</span></div>
@@ -1230,13 +1230,6 @@
                 if (!state.recovery) state.recovery = { question: '', answer: '' };
                 if (!state.prefs.accentColor) state.prefs.accentColor = '#3b82f6';
             }
-            
-            Object.keys(state.lists).forEach(list => {
-                state.lists[list] = state.lists[list].filter(t => {
-                    if (!t.completed) return true;
-                    return (Date.now() - t.completedAt) < (5 * 24 * 60 * 60 * 1000);
-                });
-            });
             
             applyThemeUI(state.theme);
             if (state.prefs.firstRun) {
@@ -2051,7 +2044,7 @@
             if (!init) syncState();
         }
 
-        function startNexusEnvironmentalEngine() {
+                function startNexusEnvironmentalEngine() {
             setInterval(() => {
                 const now = new Date();
                 const node = document.getElementById('real-time-clock');
@@ -2063,7 +2056,12 @@
                     try {
                         const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&current_weather=true&temperature_unit=fahrenheit`);
                         const data = await res.json();
-                        if (data.current_weather) { document.getElementById('weather-node').innerText = `${Math.round(data.current_weather.temperature)}°F`; }
+                        if (data.current_weather) { 
+                            // Update the weather node
+                            document.getElementById('weather-node').innerText = `${Math.round(data.current_weather.temperature)}°F`; 
+                            // RE-RENDER the briefing so it shows the new temperature
+                            renderBriefing();
+                        }
                     } catch (e) { console.warn("Weather Failed"); }
                 });
             }
