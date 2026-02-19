@@ -1086,7 +1086,7 @@
             const now = new Date();
 
             // Only show briefing if it's before 11 AM and hasn't been dismissed this session
-            if (now.getHours() >= 24 || sessionStorage.getItem('nexus_briefing_dismissed')) {
+            if (now.getHours() >= 11 || sessionStorage.getItem('nexus_briefing_dismissed')) {
                 node.style.display = 'none';
                 return;
             }
