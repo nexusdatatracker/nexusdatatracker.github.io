@@ -96,7 +96,7 @@
         3. HUMAN-CENTRIC HEADER & SCRIPTURE
         ================================================================================
         */
-        .nx-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 3.5rem; flex-wrap: wrap; }
+        .nx-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
         
         .verse-aside {
             font-size: 0.85rem;
@@ -124,7 +124,7 @@
         .nx-dashboard-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 1.5rem;
+            gap: 1rem;
             align-items: flex-start; /* Key: Elements move up and don't stretch vertically */
         }
 
@@ -144,7 +144,7 @@
             border: 1px solid var(--card-border);
             backdrop-filter: blur(var(--panel-blur));
             border-radius: var(--curve);
-            padding: 1.5rem;
+            padding: 1.25rem;
             position: relative;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex; 
@@ -160,7 +160,7 @@
 
         .nx-card:hover { border-color: var(--accent-color); box-shadow: 0 10px 40px -10px var(--accent-glow); transform: translateY(-3px); }
 
-        .nx-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+        .nx-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
 
         .nx-card-title {
             font-weight: 800;
@@ -208,7 +208,7 @@
             width: 100%;
             outline: none;
             font-family: inherit;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .nx-input:focus { border-color: var(--accent-color); }
@@ -243,7 +243,7 @@
             background: var(--bg-primary);
             border: 1px solid var(--card-border);
             border-radius: 2rem;
-            padding: 2.5rem;
+            padding: 1.5rem;
             width: 90%;
             max-width: 500px;
             position: relative;
@@ -251,7 +251,7 @@
             overflow-y: auto;
         }
 
-        .nx-modal h2 { margin-bottom: 2rem; font-weight: 800; letter-spacing: -0.5px; color: var(--accent-color); }
+        .nx-modal h2 { margin-bottom: 1rem; font-weight: 800; letter-spacing: -0.5px; color: var(--accent-color); }
         /* 
         ================================================================================
         7. TIMER CORE
@@ -262,13 +262,13 @@
             font-size: 5rem;
             font-weight: 700;
             text-align: center;
-            margin: 1.5rem 0;
+            margin: 1rem 0;
             letter-spacing: -4px;
             color: var(--text-main);
             text-shadow: 0 0 30px var(--accent-glow);
         }
 
-        .timer-input-wrap { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem; }
+        .timer-input-wrap { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem; }
 
         .timer-unit-input {
             width: 70px; text-align: center;
@@ -308,7 +308,7 @@
         .todo-item {
             border-left: 4px solid var(--accent-color);
             padding: 1rem; background: rgba(255,255,255,0.02);
-            border-radius: 1rem; margin-bottom: 0.75rem;
+            border-radius: 1rem; margin-bottom: 0.5rem;
             display: flex; flex-direction: column; gap: 0.4rem;
             transition: all 0.3s ease;
         }
@@ -324,11 +324,11 @@
             background: rgba(255,255,255,0.02);
             border: 1px solid var(--card-border);
             border-radius: 1.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1rem;
             transition: 0.3s;
         }
 
@@ -365,7 +365,7 @@
 
         .progress-val { position: relative; z-index: 10; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 900; }
 
-        .empty-state { text-align: center; padding: 3rem; opacity: 0.2; font-style: italic; font-size: 0.9rem; }
+        .empty-state { text-align: center; padding: 2rem; opacity: 0.2; font-style: italic; font-size: 0.9rem; }
 
         /* 
         ================================================================================
@@ -373,11 +373,11 @@
         ================================================================================
         */
         .portal-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 1rem;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 0.5rem;
         }
 
         .portal-item {
-            position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+            position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
             cursor: pointer; transition: 0.3s;
             overflow: hidden;
             width: 80px;
@@ -561,9 +561,9 @@
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
         /* ADVANCED SETTINGS CSS */
-        .settings-sec { margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 1.5rem; }
-        .settings-label { display: block; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; margin-bottom: 0.75rem; opacity: 0.5; }
-        .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; font-size: 0.9rem; }
+        .settings-sec { margin-bottom: 0.75rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.75rem; }
+        .settings-label { display: block; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; margin-bottom: 0.5rem; opacity: 0.5; }
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.9rem; }
         .range-styled { width: 100%; accent-color: var(--accent-color); }
 
         /* COUNTDOWN LOGIC STYLES */
@@ -586,7 +586,7 @@
             border: 1px solid var(--card-border);
             padding: 1rem;
             border-radius: 1rem;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
             display: flex;
             flex-direction: column;
             gap: 0.3rem;
@@ -596,13 +596,22 @@
         .countdown-card-item:hover { border-color: var(--accent-color); }
 
         .cd-val { font-family: var(--font-mono); font-weight: 900; font-size: 1.1rem; color: var(--accent-color); }
-        .cd-val { font-family: var(--font-mono); font-weight: 900; font-size: 1.1rem; color: var(--accent-color); }
         .cd-label { font-size: 0.65rem; text-transform: uppercase; font-weight: 800; opacity: 0.4; letter-spacing: 1px; }
 
         .cd-actions { position: absolute; top: 0.75rem; right: 0.75rem; display: flex; gap: 0.4rem; }
         .cd-mini-btn { background: none; border: none; color: white; opacity: 0.2; cursor: pointer; transition: 0.2s; }
         .cd-mini-btn:hover { opacity: 1; color: var(--accent-color); }
         .cd-mini-btn.active { opacity: 1; color: var(--success); }
+
+        /* REMINDER ENGINE STYLES */
+        .reminder-row {
+            background: rgba(255,255,255,0.02); border-left: 4px solid var(--accent-color);
+            border-radius: 1rem; padding: 1rem; margin-bottom: 0.5rem;
+            display: flex; justify-content: space-between; align-items: start;
+            transition: 0.3s;
+        }
+        .reminder-row.past { border-left-color: var(--danger); opacity: 0.8; }
+        .rem-meta { font-family: var(--font-mono); font-size: 0.65rem; color: var(--accent-color); font-weight: 700; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -698,6 +707,7 @@
                 <div class="toggle-row"><span>Countdown Timers</span> <input type="checkbox" id="vis-countdowns" checked onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row"><span>Daily Scripture</span> <input type="checkbox" id="set-script-master" checked onchange="updateInterfaceConfig()"></div>
                 <div class="toggle-row"><span>Weather Node</span> <input type="checkbox" id="vis-weather" checked onchange="updateInterfaceConfig()"></div>
+                <div class="toggle-row"><span>Notifications Node</span> <input type="checkbox" id="vis-reminders" checked onchange="updateInterfaceConfig()"></div>
             </div>
 
             <div class="settings-sec">
@@ -735,18 +745,6 @@
         </div>
     </div>
 
-    <!-- REMINDERS MODAL -->
-    <div class="nx-modal-overlay" id="mod-reminders">
-        <div class="nx-modal">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h2 style="margin: 0;">Reminders</h2>
-                <button class="nx-btn nx-btn-icon" onclick="spawnReminderCreator()"><i data-lucide="plus"></i></button>
-            </div>
-            <div id="reminders-list" style="display: flex; flex-direction: column; gap: 1rem; max-height: 400px; overflow-y: auto; padding-right: 0.5rem;"></div>
-            <button class="nx-btn" style="margin-top: 2rem; width: 100%; justify-content: center; background: var(--accent-color);" onclick="closeMod('mod-reminders')">Close</button>
-        </div>
-    </div>
-
     <!-- ENTRY DIALOG (GENERIC) -->
     <div class="nx-modal-overlay" id="mod-creator">
         <div class="nx-modal">
@@ -771,7 +769,7 @@
             <div class="verse-aside" id="scripture-bar">Loading scripture...</div>
             
             <div class="header-actions">
-                <!-- REAL-TIME CLOCK ADDED -->
+                <!-- REAL-TIME CLOCK -->
                 <div id="real-time-clock" style="padding: 0.85rem 1.5rem; background: var(--card-bg); border-radius: 1.25rem; border: 1px solid var(--card-border); font-weight: 700; font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 1px;">
                     00:00:00
                 </div>
@@ -781,7 +779,7 @@
                 </div>
                 <!-- TOP COUNTDOWN display -->
                 <div id="top-countdown-display" class="top-countdown-bar"></div>
-                <button class="nx-btn nx-btn-icon" title="Reminders" onclick="openMod('mod-reminders')"><i data-lucide="bell"></i></button>
+                <!-- SETTINGS -->
                 <button class="nx-btn nx-btn-icon" id="tour-settings" onclick="openMod('mod-theme')"><i data-lucide="settings"></i></button>
             </div>
         </header>
@@ -864,7 +862,7 @@
                 </div>
             </section>
 
-            <!-- NOTE ARCHIVE (DOCS MODE) - HEIGHT UNCHANGED AS REQUESTED -->
+            <!-- NOTE ARCHIVE (DOCS MODE) -->
             <section class="nx-card grid-md row-2" id="tour-notes">
                 <div class="nx-card-header">
                     <span class="nx-card-title"><i data-lucide="file-text"></i> Notepad</span>
@@ -915,13 +913,23 @@
                     <div class="docs-editor-main" id="docs-main" contenteditable="true" onfocus="showToolbar()" onblur="hideToolbar()" oninput="saveNote()"></div>
                 </div>
             </section>
-<!-- COUNTDOWN MODULE -->
+            
+            <!-- COUNTDOWN MODULE -->
              <section class="nx-card grid-sm" id="tour-countdowns">
                 <div class="nx-card-header">
                     <span class="nx-card-title"><i data-lucide="hourglass"></i> Countdown Timers</span>
                     <button class="nx-btn nx-btn-icon" onclick="spawnCountdownCreator()"><i data-lucide="plus"></i></button>
                 </div>
                 <div id="countdown-view"></div>
+            </section>
+
+            <!-- REMINDERS MODULE (NEW) -->
+            <section class="nx-card grid-sm" id="tour-reminders">
+                <div class="nx-card-header">
+                    <span class="nx-card-title"><i data-lucide="bell"></i> Notifications</span>
+                    <button class="nx-btn nx-btn-icon" onclick="spawnReminderCreator()"><i data-lucide="plus"></i></button>
+                </div>
+                <div id="reminder-view" style="max-height:400px; overflow-y:auto; padding-right:5px;"></div>
             </section>
             
         </main>
@@ -933,6 +941,39 @@
         NewTestament: [ Matthew, Mark, Luke, John, Acts, Romans, 1 Corinthians, 2 Corinthians, Galatians, Ephesians, Philippians, Colossians, 1 Thessalonians, 2 Thessalonians, 1 Timothy, 2 Timothy, Titus, Philemon, Hebrews, James, 1 Peter, 2 Peter, 1 John, 2 John, 3 John, Jude, Revelation ],
         D&C: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138 ],
         PearlOfGreatPrice: [ Moses, Abraham, Joseph Smith–Matthew, Joseph Smith–History, Articles of Faith ],
+        GenesisChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50 ],
+        ExodusChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 ],
+        LeviticusChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27 ],
+        NumbersChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 ],
+        DeuteronomyChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 ],
+        JoshuaChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 ],
+        JudgesChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 ],
+        RuthChapters: [ 1, 2, 3, 4 ],
+        OneSamuelChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 ],
+        TwoSamuelChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 ],
+        OneKingsChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
+        TwoKingsChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 ],
+        OneChroniclesChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 ],
+        TwoChroniclesChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 ],
+        EzraChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
+        NehemiahChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ],
+        EstherChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
+        JobChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42 ],
+        PsalmsChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150 ],
+        ProverbsChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 ],
+        EcclesiastesChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+        SongOfSolomonChapters: [ 1, 2, 3, 4, 5, 6, 7, 8 ],
+        IsaiahChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66 ],
+        JeremiahChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52 ],
+        LamentationsChapters: [ 1, 2, 3, 4, 5 ],
+        EzekielChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48 ],
+        DanielChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+        OneNephiChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
+        TwoNephiChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33 ],
+        AlmaChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63 ],
+        ThirdNephiChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 ],
+        EtherChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+        MoroniChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
         RevisionLog: [
             "V12.0: ID-based task logic for duplicate support",
             "V12.0: Multi-column adaptive layout",
@@ -982,7 +1023,7 @@
                         <div style="width: 50px; height: 50px; background: var(--accent-glow); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; color: ${color};">
                             <i data-lucide="${icon}" size="24"></i>
                         </div>
-                        <h2 style="margin-bottom: 0.5rem; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px;">Editing Data</h2>
+                        <h2 style="margin-bottom: 0.5rem; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px;">Attention</h2>
                         <p style="margin-bottom: 1.5rem; opacity: 0.6; line-height: 1.6; font-size: 0.9rem;">${message}</p>
                         ${inputField}
                         <div style="display:flex; gap:0.5rem">
@@ -1094,7 +1135,7 @@
             cachedVerse: null,
             password: '',
             recovery: { question: '', answer: '' },
-            prefs: { useLDS: true, firstRun: true, vis: { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true }, accentColor: '#3b82f6' },
+            prefs: { useLDS: true, firstRun: true, vis: { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true, reminders: true }, accentColor: '#3b82f6' },
             countdowns: [],
             topCountdownId: null,
             reminders: []
@@ -1111,7 +1152,7 @@
                 if (!state.countdowns) state.countdowns = [];
                 if (!state.reminders) state.reminders = [];
                 if (state.topCountdownId === undefined) state.topCountdownId = null;
-                if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true };
+                if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true, reminders: true };
                 if (!state.recovery) state.recovery = { question: '', answer: '' };
                 if (!state.prefs.accentColor) state.prefs.accentColor = '#3b82f6';
             }
@@ -1129,15 +1170,12 @@
             } else {
                 renderAll();
                 refreshScripture();
+                checkReminders(); // Persistence catcher on load
                 if (state.password) openMod('mod-lock');
             }
         };
 
-        // --- UI UTILS ---
-        const openMod = (id) => {
-            if (id === 'mod-reminders') renderReminders();
-            document.getElementById(id).style.display = 'flex';
-        };
+        const openMod = (id) => document.getElementById(id).style.display = 'flex';
         const closeMod = (id) => document.getElementById(id).style.display = 'none';
 
         const triggerToast = (msg) => {
@@ -1155,98 +1193,163 @@
             renderTodoSection(); renderHabitSection(); renderPortalSection(); renderActiveNoteUI(); refreshSelectors(); refreshClockUI(); renderCountdowns(); renderReminders();
         }
 
-        // --- REMINDERS ENGINE ---
-        function renderReminders() {
-            const list = document.getElementById('reminders-list');
-            if(!list) return;
-            list.innerHTML = '';
-
-            if (state.reminders.length === 0) {
-                list.innerHTML = '<div class="empty-state">No reminders set.</div>';
-                return;
-            }
-
-            state.reminders.sort((a,b) => a.time - b.time).forEach((r) => {
-                const dateStatus = new Date(r.time).toLocaleString();
-                const isPast = r.time <= Date.now();
-                
-                const item = document.createElement('div');
-                item.className = 'nx-card';
-                item.style = `padding: 1rem; margin-bottom: 0.5rem; border-left: 4px solid ${isPast ? 'var(--danger)' : 'var(--accent-color)'}`;
-                item.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:start">
-                        <div style="flex:1">
-                            <p style="font-weight:700; font-size:0.9rem">${r.text}</p>
-                            <p style="font-size:0.75rem; opacity:0.4">${dateStatus}</p>
-                        </div>
-                        <div style="display:flex; gap:0.4rem">
-                            <button class="nx-btn nx-btn-icon" onclick="editReminder('${r.id}')"><i data-lucide="edit-3" size="14"></i></button>
-                            <button class="nx-btn nx-btn-icon" style="color:var(--danger)" onclick="deleteReminder('${r.id}')"><i data-lucide="trash-2" size="14"></i></button>
-                        </div>
-                    </div>
-                `;
-                list.appendChild(item);
-            });
-            lucide.createIcons();
-        }
-
-        function spawnReminderCreator(existingId = null) {
-            const r = existingId ? state.reminders.find(x => x.id === existingId) : null;
-            const f = document.getElementById('creator-fields');
-            document.getElementById('creator-title').innerText = r ? "Edit Reminder" : "New Reminder";
+        // --- REMINDERS LOGIC (RECURRING ENGINE) ---
+        function calculateNextTrigger(rem, referenceTime = Date.now()) {
+            let next = new Date(rem.baseTime);
+            const now = new Date(referenceTime);
             
-            let defaultDate = "";
-            if(r) {
-                const d = new Date(r.time);
-                d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-                defaultDate = d.toISOString().slice(0, 16);
-            }
+            if (rem.freq === 'once') return rem.baseTime;
 
-            f.innerHTML = `
-                <input type="text" id="rem-text" class="nx-input" placeholder="Reminder message" value="${r ? r.text : ''}">
-                <input type="datetime-local" id="rem-time" class="nx-input" value="${defaultDate}">
-            `;
-            
-            document.getElementById('creator-save-btn').onclick = () => {
-                const text = document.getElementById('rem-text').value;
-                const timeStr = document.getElementById('rem-time').value;
-                if(!text || !timeStr) return triggerToast("Data required.");
-
-                if(r) {
-                    r.text = text;
-                    r.time = new Date(timeStr).getTime();
-                    r.triggered = false;
-                } else {
-                    state.reminders.push({
-                        id: Math.random().toString(36).substr(2, 9),
-                        text: text,
-                        time: new Date(timeStr).getTime(),
-                        triggered: false
-                    });
+            // Increment trigger until it is in the future
+            while (next <= now) {
+                if (rem.freq === 'hourly') next.setHours(next.getHours() + 1);
+                else if (rem.freq === 'daily') next.setDate(next.getDate() + 1);
+                else if (rem.freq === 'weekly') next.setDate(next.getDate() + 7);
+                else if (rem.freq === 'monthly') next.setMonth(next.getMonth() + 1);
+                else if (rem.freq === 'yearly') next.setFullYear(next.getFullYear() + 1);
+                else if (rem.freq === 'interval') next.setMinutes(next.getMinutes() + parseInt(rem.interval));
+                else if (rem.freq === 'weekday') {
+                    next.setDate(next.getDate() + 1);
+                    while(next.getDay() !== parseInt(rem.day)) { next.setDate(next.getDate() + 1); }
                 }
-                closeMod('mod-creator');
-                renderReminders();
-                syncState();
-                checkReminders();
-            };
-            openMod('mod-creator');
+                else if (rem.freq === 'dateNoYear') {
+                    next.setFullYear(next.getFullYear() + 1);
+                }
+                else break;
+            }
+            return next.getTime();
         }
-
-        function editReminder(id) { spawnReminderCreator(id); }
-        function deleteReminder(id) { state.reminders = state.reminders.filter(x => x.id !== id); renderReminders(); syncState(); }
 
         function checkReminders() {
             const now = Date.now();
             let changed = false;
             state.reminders.forEach(r => {
-                if (!r.triggered && r.time <= now) {
-                    r.triggered = true;
+                if (r.nextTrigger <= now) {
+                    nexusDialog('alert', `<strong>NOTIFICATION:</strong><br>${r.text}`);
+                    r.lastTriggered = now;
+                    r.nextTrigger = calculateNextTrigger(r);
+                    if (r.freq === 'once') r.expired = true;
                     changed = true;
-                    nexusDialog('alert', `<strong>REMINDER:</strong><br>${r.text}`);
                 }
             });
-            if (changed) { syncState(); renderReminders(); }
+            if (changed) {
+                state.reminders = state.reminders.filter(x => !x.expired);
+                syncState(); renderReminders();
+            }
         }
+
+        function renderReminders() {
+            const v = document.getElementById('reminder-view');
+            if(!v) return;
+            v.innerHTML = '';
+            if (state.reminders.length === 0) {
+                v.innerHTML = '<div class="empty-state">No reminders active.</div>';
+            } else {
+                state.reminders.sort((a,b) => a.nextTrigger - b.nextTrigger).forEach(r => {
+                    const row = document.createElement('div');
+                    row.className = `reminder-row ${r.nextTrigger <= Date.now() ? 'past' : ''}`;
+                    row.innerHTML = `
+                        <div>
+                            <p style="font-weight:700; font-size:0.85rem">${r.text}</p>
+                            <p class="rem-meta">${new Date(r.nextTrigger).toLocaleString()}</p>
+                        </div>
+                        <div style="display:flex; gap:0.4rem">
+                            <button class="nx-btn nx-btn-icon" onclick="editReminder('${r.id}')"><i data-lucide="edit-3" size="12"></i></button>
+                            <button class="nx-btn nx-btn-icon" style="color:var(--danger)" onclick="deleteReminder('${r.id}')"><i data-lucide="trash-2" size="12"></i></button>
+                        </div>
+                    `;
+                    v.appendChild(row);
+                });
+            }
+            lucide.createIcons();
+        }
+
+        function spawnReminderCreator(id = null) {
+            const r = id ? state.reminders.find(x => x.id === id) : null;
+            const f = document.getElementById('creator-fields');
+            document.getElementById('creator-title').innerText = r ? "Modify Reminder" : "New Reminder";
+            
+            f.innerHTML = `
+                <input type="text" id="rem-text-in" class="nx-input" placeholder="Message" value="${r ? r.text : ''}">
+                <select id="rem-freq-in" class="nx-input" onchange="toggleRemFields()">
+                    <option value="once" ${r?.freq=='once'?'selected':''}>Once (Specific Date/Time)</option>
+                    <option value="hourly" ${r?.freq=='hourly'?'selected':''}>Hourly</option>
+                    <option value="daily" ${r?.freq=='daily'?'selected':''}>Daily</option>
+                    <option value="weekly" ${r?.freq=='weekly'?'selected':''}>Weekly</option>
+                    <option value="monthly" ${r?.freq=='monthly'?'selected':''}>Monthly</option>
+                    <option value="yearly" ${r?.freq=='yearly'?'selected':''}>Yearly</option>
+                    <option value="interval" ${r?.freq=='interval'?'selected':''}>Custom Interval (Minutes)</option>
+                    <option value="weekday" ${r?.freq=='weekday'?'selected':''}>Specific Weekday</option>
+                    <option value="dateNoYear" ${r?.freq=='dateNoYear'?'selected':''}>Date (ignore year)</option>
+                </select>
+                <div id="rem-extra-fields"></div>
+            `;
+
+            toggleRemFields(r);
+
+            document.getElementById('creator-save-btn').onclick = () => {
+                const text = document.getElementById('rem-text-in').value;
+                const freq = document.getElementById('rem-freq-in').value;
+                if(!text) return triggerToast("Data missing.");
+
+                let remObj = {
+                    id: id || Math.random().toString(36).substr(2, 9),
+                    text: text,
+                    freq: freq,
+                    baseTime: Date.now()
+                };
+
+                if(['once', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'].includes(freq)) {
+                    remObj.baseTime = new Date(document.getElementById('rem-time-in').value).getTime();
+                } else if(freq === 'interval') {
+                    remObj.interval = document.getElementById('rem-int-in').value;
+                } else if(freq === 'weekday') {
+                    remObj.day = document.getElementById('rem-day-in').value;
+                    const d = new Date(); d.setHours(0,0,0,0); remObj.baseTime = d.getTime();
+                } else if(freq === 'dateNoYear') {
+                    const d = new Date(document.getElementById('rem-date-in').value);
+                    const now = new Date(); d.setFullYear(now.getFullYear());
+                    remObj.baseTime = d.getTime();
+                }
+
+                remObj.nextTrigger = calculateNextTrigger(remObj, Date.now() - 1000);
+                
+                if(id) {
+                    const idx = state.reminders.findIndex(x => x.id === id);
+                    state.reminders[idx] = remObj;
+                } else {
+                    state.reminders.push(remObj);
+                }
+
+                closeMod('mod-creator');
+                syncState(); renderReminders();
+            };
+            openMod('mod-creator');
+        }
+
+        function toggleRemFields(r = null) {
+            const freq = document.getElementById('rem-freq-in').value;
+            const container = document.getElementById('rem-extra-fields');
+            container.innerHTML = "";
+
+            if(['once', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'].includes(freq)) {
+                container.innerHTML = `<p class="settings-label">Start Time</p><input type="datetime-local" id="rem-time-in" class="nx-input" value="${r ? new Date(r.baseTime).toISOString().slice(0,16) : ''}">`;
+            } else if(freq === 'interval') {
+                container.innerHTML = `<input type="number" id="rem-int-in" class="nx-input" placeholder="Minutes between activation" value="${r ? r.interval : ''}">`;
+            } else if(freq === 'weekday') {
+                container.innerHTML = `
+                    <select id="rem-day-in" class="nx-input">
+                        <option value="0">Sunday</option><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option>
+                    </select>
+                `;
+                if(r) document.getElementById('rem-day-in').value = r.day;
+            } else if(freq === 'dateNoYear') {
+                container.innerHTML = `<p class="settings-label">Select Month/Day</p><input type="date" id="rem-date-in" class="nx-input">`;
+            }
+        }
+
+        function editReminder(id) { spawnReminderCreator(id); }
+        function deleteReminder(id) { state.reminders = state.reminders.filter(x => x.id !== id); syncState(); renderReminders(); }
 
         // --- TASK CORE (ID-BASED) ---
         function renderTodoSection() {
@@ -1465,7 +1568,7 @@
             f.innerHTML = `<input type="text" id="in-pf-t" class="nx-input" placeholder="Folder Name">`;
             document.getElementById('creator-save-btn').onclick = () => {
                 const n = document.getElementById('in-pf-t').value; if(!n) return;
-                state.portals[n] = []; state.activePortalGroup = n; closeMod('mod-creator'); renderPortalSection();
+                state.portals[n] = []; state.activePortalGroup = n; closeMod('mod-creator'); renderPortalSection(); refreshSelectors();
             };
             openMod('mod-creator');
         }
@@ -1480,6 +1583,7 @@
                 delete state.portals[old];
                 state.activePortalGroup = res;
                 renderPortalSection();
+                refreshSelectors();
             }
         }
 
@@ -1489,6 +1593,7 @@
                 delete state.portals[state.activePortalGroup];
                 state.activePortalGroup = Object.keys(state.portals)[0];
                 renderPortalSection();
+                refreshSelectors();
             }
         }
 
@@ -1648,17 +1753,9 @@
             state.recovery = { question: q || '', answer: a || '' };
             state.prefs.firstRun = false;
 
-            const settingsScriptToggle = document.getElementById('set-script-master');
-            const settingsLDSToggle = document.getElementById('set-lds');
-            const settingsPassField = document.getElementById('set-password');
-            
-            if (settingsScriptToggle) settingsScriptToggle.checked = state.prefs.showScripture;
-            if (settingsLDSToggle) settingsLDSToggle.checked = state.prefs.useLDS;
-            if (settingsPassField) settingsPassField.value = state.password;
-
+            updateInterfaceConfig(true); 
             closeMod('mod-setup');
             syncState(); 
-            updateInterfaceConfig(true); 
             renderAll(); 
             refreshScripture(); 
             setTimeout(executeTour, 500);
@@ -1670,10 +1767,10 @@
                 { id: 'scripture-bar', t: 'Scripture', d: 'A scripture verse is selected here on every refresh.' },
                 { id: 'tour-tasks', t: 'Tasks', d: 'Manage multiple task lists. Completed items move to the bottom automatically.' },
                 { id: 'tour-timer', t: 'Time', d: 'Use this Pomodoro clock to keep yourself focused during work.' },
-                { id: 'tour-habits', t: 'Habits', d: 'Track goals and visually monitor your progress.' },
-                { id: 'tour-links', t: 'Shortcuts', d: 'Quick access links to your most visited websites.' },
-                { id: 'tour-notes', t: 'Notepad', d: ' Basic Notepad for writing down information.' },
-                { id: 'tour-settings', t: 'Full Control', d: 'Customize colors, modules, themes, and much more from the settings.' }
+                { id: 'tour-habits', t: 'Habits', d: 'Track goals and monitor progress visually.' },
+                { id: 'tour-links', t: 'Shortcuts', d: 'Quick access buttons for your favorite websites.' },
+                { id: 'tour-reminders', t: 'Notifications', d: 'Set complex recurring reminders across hours, weeks, or specific weekdays.' },
+                { id: 'tour-settings', t: 'Customization', d: 'Change accent colors, themes, module visibility, and more.' }
             ];
 
             for (let step of steps) {
@@ -1701,10 +1798,10 @@
                     bubble.style.left = Math.max(20, Math.min(left, window.innerWidth - 300)) + "px";
                     bubble.style.opacity = '1';
                     bubble.querySelector('#tour-next').onclick = () => { el.classList.remove('tour-highlight'); bubble.remove(); resolve(); };
-                    bubble.querySelector('#tour-skip').onclick = () => { el.classList.remove('tour-highlight'); bubble.remove(); triggerToast("Tour Complete!"); throw "SKIP_TOUR"; };
-                }).catch(e => { if(e === "SKIP_TOUR") return; });
+                    bubble.querySelector('#tour-skip').onclick = () => { el.classList.remove('tour-highlight'); bubble.remove(); triggerToast("Tour Skip"); throw "SKIP"; };
+                }).catch(e => { if(e === "SKIP") return; });
             }
-            triggerToast("Tour Complete!");
+            triggerToast("Ready.");
         }
 
         window.addEventListener('click', (e) => {
@@ -1726,8 +1823,8 @@
                 dlAnchor.click();
                 document.body.removeChild(dlAnchor);
                 URL.revokeObjectURL(url);
-                triggerToast("Database Exported");
-            } catch (err) { triggerToast("Export Failed"); }
+                triggerToast("Exported.");
+            } catch (err) { triggerToast("Export Failed."); }
         }
 
         function importData(input) {
@@ -1738,56 +1835,71 @@
                 try {
                     const importedState = JSON.parse(e.target.result);
                     if (importedState && typeof importedState === 'object') {
-                        state = importedState; syncState(); renderAll(); updateInterfaceConfig(true); triggerToast("Backup Restored"); input.value = ''; 
-                    } else { throw new Error("Invalid format"); }
-                } catch (err) { triggerToast("Import Failed"); }
+                        state = importedState; syncState(); renderAll(); updateInterfaceConfig(true); triggerToast("Restored."); input.value = ''; 
+                    } else { throw new Error("Format error"); }
+                } catch (err) { triggerToast("Format Error."); }
             };
             reader.readAsText(file);
         }
 
-        let inactivityTimer;
-        function resetInactivityTimer() {
-            clearTimeout(inactivityTimer);
-            if (state.password && document.getElementById('mod-lock').style.display !== 'flex') {
-                inactivityTimer = setTimeout(() => { if (state.password) openMod('mod-lock'); }, 120000); 
-            }
-        }
-
-        function unlockApp() {
+        const unlockApp = () => {
             const input = document.getElementById('lock-pass-input');
-            if (input.value === state.password) { closeMod('mod-lock'); input.value = ''; resetInactivityTimer(); } 
-            else { triggerToast("Incorrect Password."); }
-        }
+            if (input.value === state.password) { closeMod('mod-lock'); input.value = ''; } 
+            else { triggerToast("Invalid Password."); }
+        };
 
-        function toggleRecovery(show) {
+        const toggleRecovery = (show) => {
             document.getElementById('lock-standard-view').style.display = show ? 'none' : 'block';
             document.getElementById('lock-recovery-view').style.display = show ? 'block' : 'none';
-            if(show) { document.getElementById('recovery-question-display').innerText = state.recovery?.question || "No security question set."; }
-        }
+            
+            if(show) { 
+                // Check if a valid recovery path actually exists
+                const hasRecovery = state.recovery?.answer && state.recovery.answer.trim() !== "";
+                const display = document.getElementById('recovery-question-display');
+                const uiInput = document.getElementById('lock-answer-input');
+                const uiBtn = document.querySelector('#lock-recovery-view .nx-btn');
 
-        function recoverApp() {
-            const inputAnswer = document.getElementById('lock-answer-input').value.toLowerCase().trim();
+                if (hasRecovery) {
+                    display.innerText = state.recovery.question;
+                    uiInput.style.display = 'block';
+                    uiBtn.style.display = 'block';
+                } else {
+                    display.innerText = "Security Question was not set. Please use your password. If you do not remember your password, your account data will be lost. Please check if you have a data export in your files app. To reset the app, please clear your browser cookies.";
+                    uiInput.style.display = 'none';
+                    uiBtn.style.display = 'none';
+                }
+            }
+        };
+
+        const recoverApp = () => {
             const savedAnswer = state.recovery?.answer?.toLowerCase().trim();
-            if (!savedAnswer || savedAnswer === "") { triggerToast("Account recovery is not configured."); return; }
-            if (inputAnswer === savedAnswer) { triggerToast("Identity Verified. Access Granted."); closeMod('mod-lock'); toggleRecovery(false); document.getElementById('lock-answer-input').value = ''; resetInactivityTimer(); } 
-            else { triggerToast("Incorrect answer."); }
-        }
+            
+            // CRITICAL FIX: Ensure savedAnswer is not empty before comparing
+            if (!savedAnswer || savedAnswer === "") {
+                triggerToast("No recovery data found.");
+                return;
+            }
 
-        document.getElementById('lock-pass-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') unlockApp(); });
-
-        ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
-            window.addEventListener(evt, resetInactivityTimer);
-        });
+            const inputAnswer = document.getElementById('lock-answer-input').value.toLowerCase().trim();
+            
+            // Double validation: input must match saved answer AND input cannot be empty
+            if (inputAnswer !== "" && inputAnswer === savedAnswer) { 
+                triggerToast("Welcome back. Please change your password for next time."); 
+                closeMod('mod-lock'); 
+                toggleRecovery(false); 
+                document.getElementById('lock-answer-input').value = ''; 
+            } else { 
+                triggerToast("Verification Failed."); 
+            }
+        };
+        document.getElementById('lock-pass-input').onkeydown = (e) => { if(e.key=='Enter') unlockApp(); };
         
         window.onload = function() {
             bootstrapState();
-            if (!state.prefs.accentColor) state.prefs.accentColor = "#3b82f6";
-            updateInterfaceConfig(true); 
+            updateInterfaceConfig(init = true); 
             startNexusEnvironmentalEngine();
             setupLinkProtocol();
-            resetInactivityTimer();
-            checkReminders();
-            setInterval(checkReminders, 30000);
+            setInterval(checkReminders, 1000); // Reminders checked every second
         };
 
         function updateInterfaceConfig(init = false) {
@@ -1802,15 +1914,15 @@
             };
 
             if(!init) {
-                state.prefs.accentColor = ui.accent.value;
-                state.prefs.showScripture = ui.script.checked;
-                state.prefs.is24h = ui.is24.checked;
-                state.prefs.useLDS = ui.lds.checked;
-                state.password = ui.pass.value;
-                if(state.recovery) {
-                    state.recovery.question = ui.recoveryq.value;
-                    state.recovery.answer = ui.recoverya.value;
-                }
+                // Save from UI to state
+                if (ui.accent) state.prefs.accentColor = ui.accent.value;
+                if (ui.script) state.prefs.showScripture = ui.script.checked;
+                if (ui.is24) state.prefs.is24h = ui.is24.checked;
+                if (ui.lds) state.prefs.useLDS = ui.lds.checked;
+                if (ui.pass) state.password = ui.pass.value;
+                if (ui.recoveryq) state.recovery.question = ui.recoveryq.value;
+                if (ui.recoverya) state.recovery.answer = ui.recoverya.value;
+
                 state.prefs.vis.tasks = document.getElementById('vis-tasks').checked;
                 state.prefs.vis.timer = document.getElementById('vis-timer').checked;
                 state.prefs.vis.habits = document.getElementById('vis-habits').checked;
@@ -1818,14 +1930,17 @@
                 state.prefs.vis.notes = document.getElementById('vis-notes').checked;
                 state.prefs.vis.countdowns = document.getElementById('vis-countdowns').checked;
                 state.prefs.vis.weather = document.getElementById('vis-weather').checked;
+                state.prefs.vis.reminders = document.getElementById('vis-reminders').checked;
             } else {
-                ui.accent.value = state.prefs.accentColor;
-                ui.script.checked = state.prefs.showScripture;
-                ui.is24.checked = state.prefs.is24h;
-                ui.lds.checked = state.prefs.useLDS;
-                ui.pass.value = state.password || '';
-                ui.recoveryq.value = state.recovery?.question || '';
-                ui.recoverya.value = state.recovery?.answer || '';
+                // Populate UI from state
+                if (ui.accent) ui.accent.value = state.prefs.accentColor;
+                if (ui.script) ui.script.checked = state.prefs.showScripture;
+                if (ui.is24) ui.is24.checked = state.prefs.is24h;
+                if (ui.lds) ui.lds.checked = state.prefs.useLDS;
+                if (ui.pass) ui.pass.value = state.password || '';
+                if (ui.recoveryq) ui.recoveryq.value = state.recovery?.question || '';
+                if (ui.recoverya) ui.recoverya.value = state.recovery?.answer || '';
+
                 document.getElementById('vis-tasks').checked = state.prefs.vis.tasks;
                 document.getElementById('vis-timer').checked = state.prefs.vis.timer;
                 document.getElementById('vis-habits').checked = state.prefs.vis.habits;
@@ -1833,33 +1948,28 @@
                 document.getElementById('vis-notes').checked = state.prefs.vis.notes;
                 document.getElementById('vis-countdowns').checked = state.prefs.vis.countdowns;
                 document.getElementById('vis-weather').checked = state.prefs.vis.weather;
+                document.getElementById('vis-reminders').checked = state.prefs.vis.reminders;
             }
 
+            // Apply Accent Color Logic
             document.documentElement.style.setProperty('--accent-color', state.prefs.accentColor);
             document.documentElement.style.setProperty('--accent-glow', state.prefs.accentColor + '55');
             
-            let link = document.querySelector("link[rel~='icon']") || document.createElement('link');
-            link.rel = 'icon'; link.href = 'https://workik.com/pstatic/331075/AIWorkspaceCodeFiles/MwwEXkGWnu258zsdqJbC/AIImages/5ac5e12b-3168-44f3-87e2-8a7d5bb85a37.png';
-            document.head.appendChild(link);
-
             const sBar = document.getElementById('scripture-bar');
             if(sBar) sBar.style.display = state.prefs.showScripture ? 'block' : 'none';
 
+            // Vis Checks
             document.getElementById('tour-tasks').style.display = state.prefs.vis.tasks ? 'flex' : 'none';
             document.getElementById('tour-timer').style.display = state.prefs.vis.timer ? 'flex' : 'none';
             document.getElementById('tour-habits').style.display = state.prefs.vis.habits ? 'flex' : 'none';
             document.getElementById('tour-links').style.display = state.prefs.vis.links ? 'flex' : 'none';
             document.getElementById('tour-notes').style.display = state.prefs.vis.notes ? 'flex' : 'none';
             document.getElementById('tour-countdowns').style.display = state.prefs.vis.countdowns ? 'flex' : 'none';
+            document.getElementById('tour-reminders').style.display = state.prefs.vis.reminders ? 'flex' : 'none';
             document.getElementById('weather-node').style.display = state.prefs.vis.weather ? 'block' : 'none';
-            if (!init) { syncState(); }
+            
+            if (!init) syncState();
         }
-
-        window.refreshClockUI = function() {
-            const m = Math.floor(state.time / 60); const s = state.time % 60;
-            const target = document.getElementById('clock');
-            if(target) target.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-        };
 
         function startNexusEnvironmentalEngine() {
             setInterval(() => {
@@ -1874,7 +1984,7 @@
                         const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&current_weather=true&temperature_unit=fahrenheit`);
                         const data = await res.json();
                         if (data.current_weather) { document.getElementById('weather-node').innerText = `${Math.round(data.current_weather.temperature)}°F`; }
-                    } catch (e) { console.error("Weather Engine Error"); }
+                    } catch (e) { console.warn("Weather Failed"); }
                 });
             }
         }
@@ -1888,27 +1998,20 @@
 
         function spawnCountdownCreator() {
             const f = document.getElementById('creator-fields');
-            document.getElementById('creator-title').innerText = "Set up Countdown";
+            document.getElementById('creator-title').innerText = "Create Countdown";
             f.innerHTML = `
-                <input type="text" id="cd-name" class="nx-input" placeholder="Event Name">
+                <input type="text" id="cd-name" class="nx-input" placeholder="Event">
                 <input type="datetime-local" id="cd-date" class="nx-input">
-                <input type="text" id="cd-subtext" class="nx-input" placeholder="Custom Subtext (Ex: 'until birthday')">
-                <select id="cd-format" class="nx-input">
-                    <option value="numbers">Numbers Only (00:00:00)</option>
-                    <option value="subtext" selected>Numbers + Subtext</option>
-                    <option value="days">Days Only</option>
-                </select>
-                <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.8rem; opacity:0.6; cursor:pointer;">
-                    <input type="checkbox" id="cd-set-top"> Stick to Header
-                </label>
+                <input type="text" id="cd-sub" class="nx-input" placeholder="Subtext">
+                <label><input type="checkbox" id="cd-pin"> Pin to Header</label>
             `;
             document.getElementById('creator-save-btn').onclick = () => {
                 const name = document.getElementById('cd-name').value;
-                const date = document.getElementById('cd-date').value;
-                if(!name || !date) return triggerToast("Data Required");
+                const d = document.getElementById('cd-date').value;
+                if(!name || !d) return;
                 const id = Math.random().toString(36).substr(2, 9);
-                state.countdowns.push({ id, name, target: new Date(date).getTime(), format: document.getElementById('cd-format').value, subtext: document.getElementById('cd-subtext').value });
-                if (document.getElementById('cd-set-top').checked) state.topCountdownId = id;
+                state.countdowns.push({ id, name, target: new Date(d).getTime(), format: 'subtext', subtext: document.getElementById('cd-sub').value });
+                if (document.getElementById('cd-pin').checked) state.topCountdownId = id;
                 closeMod('mod-creator'); renderCountdowns(); syncState();
             };
             openMod('mod-creator');
@@ -1916,37 +2019,76 @@
 
         function renderCountdowns() {
             const v = document.getElementById('countdown-view'); if(!v) return; v.innerHTML = '';
-            if (state.countdowns.length === 0) { v.innerHTML = '<div class="empty-state">No countdowns.</div>'; }
+            if (state.countdowns.length === 0) {
+                v.innerHTML = '<div class="empty-state">No active countdowns.</div>';
+            }
             state.countdowns.forEach(c => {
-                const isTop = state.topCountdownId === c.id;
-                v.innerHTML += `
-                    <div class="countdown-card-item">
-                        <div class="cd-actions">
-                            <button class="cd-mini-btn ${isTop ? 'active' : ''}" onclick="pinCountdown('${c.id}')"><i data-lucide="pin" size="12"></i></button>
-                            <button class="cd-mini-btn" style="color:var(--danger)" onclick="deleteCountdown('${c.id}')"><i data-lucide="trash-2" size="12"></i></button>
-                        </div>
-                        <div class="cd-label">${c.name}</div>
-                        <div class="cd-val" id="val-${c.id}">00:00:00</div>
-                    </div>`;
+                v.innerHTML += `<div class="countdown-card-item"><div class="cd-actions"><button class="cd-mini-btn" onclick="deleteCountdown('${c.id}')"><i data-lucide="trash-2" size="12"></i></button></div><div class="cd-label">${c.name}</div><div class="cd-val" id="val-${c.id}">00:00:00</div></div>`;
             });
             lucide.createIcons();
         }
 
-        function deleteCountdown(id) { state.countdowns = state.countdowns.filter(x => x.id !== id); if(state.topCountdownId === id) state.topCountdownId = null; renderCountdowns(); syncState(); }
-        function pinCountdown(id) { state.topCountdownId = (state.topCountdownId === id) ? null : id; renderCountdowns(); syncState(); }
+        function deleteCountdown(id) { state.countdowns = state.countdowns.filter(x => x.id !== id); renderCountdowns(); syncState(); }
 
         setInterval(() => {
-            const topBar = document.getElementById('top-countdown-display'); if(!topBar) return;
+            const topBar = document.getElementById('top-countdown-display');
             let topHtml = "";
             state.countdowns.forEach(c => {
                 const dist = c.target - Date.now();
-                const d = Math.floor(dist / 86400000); const h = Math.floor((dist % 86400000) / 3600000); const m = Math.floor((dist % 3600000) / 60000); const s = Math.floor((dist % 60000) / 1000);
-                let string = dist < 0 ? "TARGET REACHED" : (c.format === 'numbers' ? `${d}:${h}:${m}:${s}` : (c.format === 'days' ? `${d} Days` : `${d}d ${h}h ${m}m ${s}s`));
-                if(document.getElementById(`val-${c.id}`)) document.getElementById(`val-${c.id}`).innerText = string;
-                if (state.topCountdownId === c.id) topHtml = `<i data-lucide="clock" size="14"></i> ${string} ${c.subtext || ''}`;
+                const d = Math.floor(dist/86400000); const h = Math.floor((dist%86400000)/3600000); const m = Math.floor((dist%3600000)/60000); const s = Math.floor((dist%60000)/1000);
+                const str = dist < 0 ? "EXPIRED" : `${d}d ${h}h ${m}m ${s}s`;
+                if(document.getElementById(`val-${c.id}`)) document.getElementById(`val-${c.id}`).innerText = str;
+                if (state.topCountdownId === c.id) topHtml = `<i data-lucide="clock" size="14"></i> ${str} ${c.subtext || ''}`;
             });
             if (topHtml) { topBar.style.display = 'flex'; topBar.innerHTML = topHtml; lucide.createIcons(); } else { topBar.style.display = 'none'; }
         }, 1000);
     </script>
+
+   <div style="display:none" id="master-metadata">
+        BookOfMormon: [ 1 Nephi, 2 Nephi, Jacob, Enos, Jarom, Omni, Words of Mormon, Mosiah, Alma, Helaman, 3 Nephi, 4 Nephi, Mormon, Ether, Moroni ],
+        OldTestament: [ Genesis, Exodus, Leviticus, Numbers, Deuteronomy, Joshua, Judges, Ruth, 1 Samuel, 2 Samuel, 1 Kings, 2 Kings, 1 Chronicles, 2 Chronicles, Ezra, Nehemiah, Esther, Job, Psalms, Proverbs, Ecclesiastes, Song of Solomon, Isaiah, Jeremiah, Lamentations, Ezekiel, Daniel, Hosea, Joel, Amos, Obadiah, Jonah, Micah, Nahum, Habakkuk, Zephaniah, Haggai, Zechariah, Malachi ],
+        NewTestament: [ Matthew, Mark, Luke, John, Acts, Romans, 1 Corinthians, 2 Corinthians, Galatians, Ephesians, Philippians, Colossians, 1 Thessalonians, 2 Thessalonians, 1 Timothy, 2 Timothy, Titus, Philemon, Hebrews, James, 1 Peter, 2 Peter, 1 John, 2 John, 3 John, Jude, Revelation ],
+        D&C: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138 ],
+        PearlOfGreatPrice: [ Moses, Abraham, Joseph Smith–Matthew, Joseph Smith–History, Articles of Faith ],
+        GenesisChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50 ],
+        ExodusChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 ],
+        LeviticusChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27 ],
+        NumbersChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 ],
+        DeuteronomyChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 ],
+        JoshuaChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 ],
+        JudgesChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 ],
+        RuthChapters: [ 1, 2, 3, 4 ],
+        OneSamuelChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 ],
+        TwoSamuelChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 ],
+        OneKingsChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
+        TwoKingsChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 ],
+        OneChroniclesChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 ],
+        TwoChroniclesChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 ],
+        EzraChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
+        NehemiahChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ],
+        EstherChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
+        JobChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42 ],
+        PsalmsChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150 ],
+        ProverbsChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 ],
+        EcclesiastesChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+        SongOfSolomonChapters: [ 1, 2, 3, 4, 5, 6, 7, 8 ],
+        IsaiahChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66 ],
+        JeremiahChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52 ],
+        LamentationsChapters: [ 1, 2, 3, 4, 5 ],
+        EzekielChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48 ],
+        DanielChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+        OneNephiChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 ],
+        TwoNephiChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33 ],
+        AlmaChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63 ],
+        ThirdNephiChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 ],
+        EtherChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+        MoroniChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
+        Architecture: "Tri-Protocol scripture parsing engine enabled."
+    </div>
+
+    <footer style="margin-top: 10rem; text-align: center; opacity: 0.1; font-size: 0.7rem; letter-spacing: 5px; font-weight: 950; font-family:var(--font-mono)">
+        LOCAL PERSISTENCE LAYER ACTIVE // CLEARING CACHE WILL RESET DATA
+    </footer>
+</div>
 </body>
 </html>
