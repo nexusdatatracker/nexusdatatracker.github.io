@@ -612,6 +612,25 @@
         }
         .reminder-row.past { border-left-color: var(--danger); opacity: 0.8; }
         .rem-meta { font-family: var(--font-mono); font-size: 0.65rem; color: var(--accent-color); font-weight: 700; margin-top: 4px; }
+
+                /* BRIEFING NODE SPECIFICS */
+        .briefing-welcome {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--text-main), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .briefing-list { list-style: none; margin-top: 1rem; }
+        .briefing-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.75rem; 
+            margin-bottom: 0.6rem; 
+            font-size: 0.9rem; 
+            opacity: 0.8; 
+        }
     </style>
 </head>
 <body>
@@ -786,6 +805,17 @@
 
         <!-- DASHBOARD GRID -->
         <main class="nx-dashboard-grid">
+
+                        <!-- MORNING BRIEFING -->
+            <section class="nx-card grid-full" id="briefing-node" style="display:none; border-bottom: 3px solid var(--accent-color);">
+                <div class="nx-card-header">
+                    <span class="nx-card-title"><i data-lucide="coffee"></i> Morning Briefing</span>
+                    <button class="nx-btn nx-btn-icon" onclick="dismissBriefing()"><i data-lucide="x"></i></button>
+                </div>
+                <div id="briefing-content">
+                    <!-- Dynamic Content Injection -->
+                </div>
+            </section>
 
             <!-- TASKS -->
             <section class="nx-card grid-md" id="tour-tasks">
@@ -1049,6 +1079,50 @@
             });
         };
 
+        // --- MORNING BRIEFING LOGIC ---
+        function renderBriefing() {
+            const node = document.getElementById('briefing-node');
+            const content = document.getElementById('briefing-content');
+            const now = new Date();
+
+            // Only show briefing if it's before 11 AM and hasn't been dismissed this session
+            if (now.getHours() >= 24 || sessionStorage.getItem('nexus_briefing_dismissed')) {
+                node.style.display = 'none';
+                return;
+            }
+
+            node.style.display = 'flex';
+
+            // Data Gathering
+            const pendingTasks = Object.values(state.lists).flat().filter(t => !t.completed).length;
+            const activeStreaks = state.habits.length;
+            const weather = document.getElementById('weather-node').innerText;
+            
+            let countdownMsg = "No active countdown timers.";
+            if (state.countdowns.length > 0) {
+                const next = state.countdowns.sort((a,b) => a.target - b.target)[0];
+                const days = Math.ceil((next.target - Date.now()) / 86400000);
+                countdownMsg = `Your next countdown timer, <strong>${next.name}</strong>, ends ${days <= 0 ? 'today' : 'in ' + days + ' days'}.`;
+            }
+
+            content.innerHTML = `
+                <div class="briefing-welcome">Good morning.</div>
+                <p style="opacity:0.6; font-size:0.85rem">Today will be great! The current temperature is  ${weather} F°.</p>
+                
+                <div class="briefing-list">
+                    <div class="briefing-item"><i data-lucide="target" size="14" style="color:var(--accent-color)"></i> <span>You have <strong>${pendingTasks}</strong> tasks remaining across your workspaces.</span></div>
+                    <div class="briefing-item"><i data-lucide="zap" size="14" style="color:var(--accent-color)"></i> <span>Tracking <strong>${activeStreaks}</strong> active streaks. Don't let them break today.</span></div>
+                    <div class="briefing-item"><i data-lucide="calendar" size="14" style="color:var(--accent-color)"></i> <span>${countdownMsg}</span></div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function dismissBriefing() {
+            document.getElementById('briefing-node').style.display = 'none';
+            sessionStorage.setItem('nexus_briefing_dismissed', 'true');
+        }
+
         // Standard overrides
         window.alert = (msg) => nexusDialog('alert', msg);
         window.confirm = (msg) => nexusDialog('confirm', msg);
@@ -1190,7 +1264,7 @@
 
         // --- MASTER RENDERER ---
         function renderAll() {
-            renderTodoSection(); renderHabitSection(); renderPortalSection(); renderActiveNoteUI(); refreshSelectors(); refreshClockUI(); renderCountdowns(); renderReminders();
+            renderTodoSection(); renderHabitSection(); renderPortalSection(); renderActiveNoteUI(); refreshSelectors(); refreshClockUI(); renderCountdowns(); renderReminders(); renderBriefing();
         }
 
         // --- REMINDERS LOGIC (RECURRING ENGINE) ---
