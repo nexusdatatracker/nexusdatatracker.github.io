@@ -2321,20 +2321,6 @@
         window.addEventListener(event, resetInactivityTimer, { passive: true });
     });
 
-    document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "visible") {
-            performRefresh();
-        }
-    });
-
-    setInterval(() => {
-        const currentTime = Date.now();
-        if (currentTime - lastHeartbeat > 10000) { 
-            performRefresh();
-        }
-        lastHeartbeat = currentTime;
-    }, 2000);
-
     resetInactivityTimer();
 })();
     </script>
