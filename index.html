@@ -613,7 +613,7 @@
         .reminder-row.past { border-left-color: var(--danger); opacity: 0.8; }
         .rem-meta { font-family: var(--font-mono); font-size: 0.65rem; color: var(--accent-color); font-weight: 700; margin-top: 4px; }
 
-                /* BRIEFING NODE SPECIFICS */
+        /* BRIEFING NODE SPECIFICS */
         .briefing-welcome {
             font-size: 1.4rem;
             font-weight: 800;
@@ -630,6 +630,45 @@
             margin-bottom: 0.6rem; 
             font-size: 0.9rem; 
             opacity: 0.8; 
+        }
+
+        /* --- WALLPAPER OVERRIDES --- */
+        body.has-wallpaper {
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-attachment: fixed !important;
+        }
+
+        body.has-wallpaper::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        #mod-lock.has-wallpaper {
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-attachment: fixed !important;
+        }
+
+        #mod-lock.has-wallpaper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 0;
+        }
+
+        #mod-lock.has-wallpaper .nx-modal {
+            position: relative;
+            z-index: 1;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
@@ -678,7 +717,9 @@
             <!-- Standard Unlock View -->
             <div id="lock-standard-view">
                 <p style="opacity: 0.4; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 2px;">System Locked</p>
-                <input type="password" id="lock-pass-input" class="nx-input" placeholder="Enter Password" style="text-align: center; margin-bottom: 1.5rem;">
+                
+                <input type="password" id="lock-pass-input" class="nx-input" placeholder="Enter Password" style="text-align: center; margin-bottom: 0.5rem;">
+                <p style="opacity: 0.4; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px;">New features have been added! Please check the settings.</p>
                 <button class="nx-btn" style="width: 100%; justify-content: center; background: var(--accent-color); padding: 1rem; margin-bottom: 1rem;" onclick="unlockApp()">Unlock</button>
                 <p style="font-size: 0.7rem; opacity: 0.4; cursor: pointer; text-decoration: underline;" onclick="toggleRecovery(true)">Forgot Password?</p>
             </div>
@@ -709,10 +750,28 @@
             </div>
 
             <div class="settings-sec">
-                <span class="settings-label">Interface Colors</span>
+                <span class="settings-label">Custom Wallpaper</span>
+                <div style="display: flex; gap: 0.5rem; flex-direction: column;">
+                    <button class="nx-btn" onclick="document.getElementById('wallpaper-input').click()"><i data-lucide="image"></i> Main Wallpaper</button>
+                    <button class="nx-btn" onclick="document.getElementById('lock-wallpaper-input').click()"><i data-lucide="shield"></i> Lock Wallpaper</button>
+                    <div style="display:flex; gap:0.5rem">
+                        <button class="nx-btn" style="flex:1; color:var(--danger)" onclick="clearWallpaper()">Reset Main</button>
+                        <button class="nx-btn" style="flex:1; color:var(--danger)" onclick="clearLockWallpaper()">Reset Lock</button>
+                    </div>
+                    <input type="file" id="wallpaper-input" style="display: none;" accept="image/*" onchange="processWallpaper(this, 'main')">
+                    <input type="file" id="lock-wallpaper-input" style="display: none;" accept="image/*" onchange="processWallpaper(this, 'lock')">
+                </div>
+            </div>
+
+            <div class="settings-sec">
+                <span class="settings-label">Color Synchronization</span>
                 <div class="toggle-row">
-                    <span>Accent Primary</span>
+                    <span>Main Accent Color</span>
                     <input type="color" id="set-accent-color" oninput="updateInterfaceConfig()" style="border:none; background:none; cursor:pointer">
+                </div>
+                <div class="toggle-row">
+                    <span>Lock Accent Color</span>
+                    <input type="color" id="set-lock-accent" oninput="updateInterfaceConfig()" style="border:none; background:none; cursor:pointer">
                 </div>
             </div>
 
@@ -1209,7 +1268,15 @@
             cachedVerse: null,
             password: '',
             recovery: { question: '', answer: '' },
-            prefs: { useLDS: true, firstRun: true, vis: { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true, reminders: true }, accentColor: '#3b82f6' },
+            prefs: { 
+                useLDS: true, 
+                firstRun: true, 
+                vis: { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true, reminders: true }, 
+                accentColor: '#3b82f6',
+                lockAccentColor: '#3b82f6',
+                wallpaper: null,
+                lockWallpaper: null
+            },
             countdowns: [],
             topCountdownId: null,
             reminders: []
@@ -1229,6 +1296,10 @@
                 if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true, reminders: true };
                 if (!state.recovery) state.recovery = { question: '', answer: '' };
                 if (!state.prefs.accentColor) state.prefs.accentColor = '#3b82f6';
+                if (!state.prefs.lockAccentColor) state.prefs.lockAccentColor = '#3b82f6';
+                
+                // RESTORE WALLPAPER ON BOOT
+                if (state.prefs.wallpaper) applyWallpaper(state.prefs.wallpaper);
             }
             
             applyThemeUI(state.theme);
@@ -1238,12 +1309,21 @@
                 renderAll();
                 refreshScripture();
                 checkReminders(); // Persistence catcher on load
-                if (state.password) openMod('mod-lock');
+                if (state.password) {
+                    applyLockVisuals(true);
+                    openMod('mod-lock');
+                }
             }
         };
 
-        const openMod = (id) => document.getElementById(id).style.display = 'flex';
-        const closeMod = (id) => document.getElementById(id).style.display = 'none';
+        const openMod = (id) => {
+            if (id === 'mod-lock') applyLockVisuals(true);
+            document.getElementById(id).style.display = 'flex';
+        }
+        const closeMod = (id) => {
+            if (id === 'mod-lock') applyLockVisuals(false);
+            document.getElementById(id).style.display = 'none';
+        }
 
         const triggerToast = (msg) => {
             const wrap = document.getElementById('nx-toast-container');
@@ -1258,6 +1338,108 @@
         // --- MASTER RENDERER ---
         function renderAll() {
             renderTodoSection(); renderHabitSection(); renderPortalSection(); renderActiveNoteUI(); refreshSelectors(); refreshClockUI(); renderCountdowns(); renderReminders(); renderBriefing();
+        }
+
+        // --- MULTI-ENVIRONMENT THEME ENGINE ---
+        
+        async function processWallpaper(input, target = 'main') {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgData = e.target.result;
+                
+                const img = new Image();
+                img.onload = function() {
+                    const color = extractAccentColor(img);
+                    
+                    if (target === 'main') {
+                        state.prefs.wallpaper = imgData;
+                        state.prefs.accentColor = color;
+                        applyWallpaper(imgData);
+                        document.getElementById('set-accent-color').value = color;
+                    } else {
+                        state.prefs.lockWallpaper = imgData;
+                        state.prefs.lockAccentColor = color;
+                        document.getElementById('set-lock-accent').value = color;
+                        applyLockVisuals(true);
+                    }
+                    
+                    updateInterfaceConfig();
+                    syncState();
+                    triggerToast(`${target === 'lock' ? 'Lock Screen' : 'Main'} Theme Synchronized.`);
+                };
+                img.src = imgData;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function applyWallpaper(dataUrl) {
+            if (!dataUrl) return;
+            document.body.style.backgroundImage = `url(${dataUrl})`;
+            document.body.classList.add('has-wallpaper');
+        }
+
+        function applyLockVisuals(isLocked) {
+            const lockView = document.getElementById('mod-lock');
+            
+            if (isLocked) {
+                document.documentElement.style.setProperty('--accent-color', state.prefs.lockAccentColor || state.prefs.accentColor);
+                document.documentElement.style.setProperty('--accent-glow', (state.prefs.lockAccentColor || state.prefs.accentColor) + '55');
+                
+                if (state.prefs.lockWallpaper) {
+                    lockView.style.backgroundImage = `url(${state.prefs.lockWallpaper})`;
+                    lockView.classList.add('has-wallpaper');
+                } else {
+                    lockView.style.background = '#000';
+                    lockView.classList.remove('has-wallpaper');
+                }
+            } else {
+                document.documentElement.style.setProperty('--accent-color', state.prefs.accentColor);
+                document.documentElement.style.setProperty('--accent-glow', state.prefs.accentColor + '55');
+            }
+        }
+
+        function clearWallpaper() {
+            document.body.style.backgroundImage = '';
+            document.body.classList.remove('has-wallpaper');
+            state.prefs.wallpaper = null;
+            syncState();
+            triggerToast("Main wallpaper removed.");
+        }
+
+        function clearLockWallpaper() {
+            state.prefs.lockWallpaper = null;
+            applyLockVisuals(true);
+            syncState();
+            triggerToast("Lock wallpaper reset.");
+        }
+
+        function extractAccentColor(img) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 50; canvas.height = 50;
+            ctx.drawImage(img, 0, 0, 50, 50);
+            
+            const pixels = ctx.getImageData(0, 0, 50, 50).data;
+            let bestColor = { r: 59, g: 130, b: 246 }; 
+            let maxVibrancy = -1;
+
+            for (let i = 0; i < pixels.length; i += 4) {
+                const r = pixels[i];
+                const g = pixels[i+1];
+                const b = pixels[i+2];
+                const max = Math.max(r, g, b);
+                const min = Math.min(r, g, b);
+                const vibrancy = max - min;
+
+                if (vibrancy > maxVibrancy && max > 100 && max < 250) {
+                    maxVibrancy = vibrancy;
+                    bestColor = { r, g, b };
+                }
+            }
+            return "#" + ((1 << 24) + (bestColor.r << 16) + (bestColor.g << 8) + bestColor.b).toString(16).slice(1);
         }
 
         // --- REMINDERS LOGIC (RECURRING ENGINE) ---
@@ -1516,7 +1698,6 @@
                 v.innerHTML = '<div class="empty-state">No streaks added.</div>';
             } else {
                 state.habits.forEach((h, i) => {
-                    // Logic: The visual wheel fills to 360deg but caps there so it doesn't glitch when you exceed the goal
                     const deg = Math.min((h.count / h.goal) * 360, 360);
                     v.innerHTML += `
                         <div class="habit-row">
@@ -1549,7 +1730,6 @@
         }
 
         function incHabit(i) {
-            // Infinite counting logic:
             state.habits[i].count++; 
             renderHabitSection();
             
@@ -1917,7 +2097,7 @@
 
         const unlockApp = () => {
             const input = document.getElementById('lock-pass-input');
-            if (input.value === state.password) { closeMod('mod-lock'); input.value = ''; } 
+            if (input.value === state.password) { applyLockVisuals(false); closeMod('mod-lock'); input.value = ''; } 
             else { triggerToast("Invalid Password."); }
         };
 
@@ -1926,7 +2106,6 @@
             document.getElementById('lock-recovery-view').style.display = show ? 'block' : 'none';
             
             if(show) { 
-                // Check if a valid recovery path actually exists
                 const hasRecovery = state.recovery?.answer && state.recovery.answer.trim() !== "";
                 const display = document.getElementById('recovery-question-display');
                 const uiInput = document.getElementById('lock-answer-input');
@@ -1937,7 +2116,7 @@
                     uiInput.style.display = 'block';
                     uiBtn.style.display = 'block';
                 } else {
-                    display.innerText = "Security Question was not set. Please use your password. If you do not remember your password, your account data will be lost. Please check if you have a data export in your files app. To reset the app, please clear your browser cookies.";
+                    display.innerText = "No security data found.";
                     uiInput.style.display = 'none';
                     uiBtn.style.display = 'none';
                 }
@@ -1946,24 +2125,11 @@
 
         const recoverApp = () => {
             const savedAnswer = state.recovery?.answer?.toLowerCase().trim();
-            
-            // CRITICAL FIX: Ensure savedAnswer is not empty before comparing
-            if (!savedAnswer || savedAnswer === "") {
-                triggerToast("No recovery data found.");
-                return;
-            }
-
+            if (!savedAnswer || savedAnswer === "") { triggerToast("No recovery data found."); return; }
             const inputAnswer = document.getElementById('lock-answer-input').value.toLowerCase().trim();
-            
-            // Double validation: input must match saved answer AND input cannot be empty
             if (inputAnswer !== "" && inputAnswer === savedAnswer) { 
-                triggerToast("Welcome back. Please change your password for next time."); 
-                closeMod('mod-lock'); 
-                toggleRecovery(false); 
-                document.getElementById('lock-answer-input').value = ''; 
-            } else { 
-                triggerToast("Verification Failed."); 
-            }
+                triggerToast("Unlocked."); applyLockVisuals(false); closeMod('mod-lock'); toggleRecovery(false); 
+            } else { triggerToast("Verification Failed."); }
         };
         document.getElementById('lock-pass-input').onkeydown = (e) => { if(e.key=='Enter') unlockApp(); };
         
@@ -1972,12 +2138,13 @@
             updateInterfaceConfig(init = true); 
             startNexusEnvironmentalEngine();
             setupLinkProtocol();
-            setInterval(checkReminders, 1000); // Reminders checked every second
+            setInterval(checkReminders, 1000); 
         };
 
         function updateInterfaceConfig(init = false) {
             const ui = {
                 accent: document.getElementById('set-accent-color'),
+                lockAccent: document.getElementById('set-lock-accent'),
                 script: document.getElementById('set-script-master'),
                 is24: document.getElementById('set-24h'),
                 lds: document.getElementById('set-lds'),
@@ -1987,8 +2154,8 @@
             };
 
             if(!init) {
-                // Save from UI to state
                 if (ui.accent) state.prefs.accentColor = ui.accent.value;
+                if (ui.lockAccent) state.prefs.lockAccentColor = ui.lockAccent.value;
                 if (ui.script) state.prefs.showScripture = ui.script.checked;
                 if (ui.is24) state.prefs.is24h = ui.is24.checked;
                 if (ui.lds) state.prefs.useLDS = ui.lds.checked;
@@ -2005,8 +2172,8 @@
                 state.prefs.vis.weather = document.getElementById('vis-weather').checked;
                 state.prefs.vis.reminders = document.getElementById('vis-reminders').checked;
             } else {
-                // Populate UI from state
                 if (ui.accent) ui.accent.value = state.prefs.accentColor;
+                if (ui.lockAccent) ui.lockAccent.value = state.prefs.lockAccentColor || '#3b82f6';
                 if (ui.script) ui.script.checked = state.prefs.showScripture;
                 if (ui.is24) ui.is24.checked = state.prefs.is24h;
                 if (ui.lds) ui.lds.checked = state.prefs.useLDS;
@@ -2024,14 +2191,12 @@
                 document.getElementById('vis-reminders').checked = state.prefs.vis.reminders;
             }
 
-            // Apply Accent Color Logic
             document.documentElement.style.setProperty('--accent-color', state.prefs.accentColor);
             document.documentElement.style.setProperty('--accent-glow', state.prefs.accentColor + '55');
             
             const sBar = document.getElementById('scripture-bar');
             if(sBar) sBar.style.display = state.prefs.showScripture ? 'block' : 'none';
 
-            // Vis Checks
             document.getElementById('tour-tasks').style.display = state.prefs.vis.tasks ? 'flex' : 'none';
             document.getElementById('tour-timer').style.display = state.prefs.vis.timer ? 'flex' : 'none';
             document.getElementById('tour-habits').style.display = state.prefs.vis.habits ? 'flex' : 'none';
@@ -2057,9 +2222,7 @@
                         const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&current_weather=true&temperature_unit=fahrenheit`);
                         const data = await res.json();
                         if (data.current_weather) { 
-                            // Update the weather node
                             document.getElementById('weather-node').innerText = `${Math.round(data.current_weather.temperature)}°F`; 
-                            // RE-RENDER the briefing so it shows the new temperature
                             renderBriefing();
                         }
                     } catch (e) { console.warn("Weather Failed"); }
@@ -2121,11 +2284,6 @@
             if (topHtml) { topBar.style.display = 'flex'; topBar.innerHTML = topHtml; lucide.createIcons(); } else { topBar.style.display = 'none'; }
         }, 1000);
 
-      /* 
-================================================================================
-NEXUS SECURITY: INACTIVITY, SLEEP & VISIBILITY ENGINE
-================================================================================
-*/
 (function() {
     let inactivityTimer;
     let lastHeartbeat = Date.now();
@@ -2133,7 +2291,6 @@ NEXUS SECURITY: INACTIVITY, SLEEP & VISIBILITY ENGINE
 
     const performRefresh = () => window.location.reload();
 
-    // 1. INACTIVITY TIMER (Mouse, Key, Touch)
     const resetInactivityTimer = () => {
         clearTimeout(inactivityTimer);
         inactivityTimer = setTimeout(performRefresh, TWO_MINUTES);
@@ -2144,28 +2301,20 @@ NEXUS SECURITY: INACTIVITY, SLEEP & VISIBILITY ENGINE
         window.addEventListener(event, resetInactivityTimer, { passive: true });
     });
 
-    // 2. VISIBILITY CHECK (Tab switching / Screen Off-On / Reopening)
     document.addEventListener("visibilitychange", () => {
-        // Refreshes if user leaves tab or if mobile screen turns off and back on
         if (document.visibilityState === "visible") {
             performRefresh();
         }
     });
 
-    // 3. SLEEP/WAKE DETECTION (Heartbeat Check)
-    // Checks every 2 seconds. If execution was frozen (Sleep mode), 
-    // the "gap" will be huge when it resumes.
     setInterval(() => {
         const currentTime = Date.now();
         if (currentTime - lastHeartbeat > 10000) { 
-            // If more than 10 seconds passed since a 2-second check, 
-            // the system definitely went to sleep or froze.
             performRefresh();
         }
         lastHeartbeat = currentTime;
     }, 2000);
 
-    // INITIALIZE
     resetInactivityTimer();
 })();
     </script>
