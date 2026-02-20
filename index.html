@@ -2120,6 +2120,42 @@
             });
             if (topHtml) { topBar.style.display = 'flex'; topBar.innerHTML = topHtml; lucide.createIcons(); } else { topBar.style.display = 'none'; }
         }, 1000);
+
+        /* 
+================================================================================
+INACTIVITY & AUTO-REFRESH ENGINE
+================================================================================
+- Triggers refresh after 2 minutes of zero activity.
+- Triggers refresh immediately upon tab reopening or device wake.
+================================================================================
+*/
+(function() {
+    let inactivityTimer;
+    const TWO_MINUTES = 120000; // 2 minutes in milliseconds
+
+    const performRefresh = () => window.location.reload();
+
+    const resetInactivityTimer = () => {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(performRefresh, TWO_MINUTES);
+    };
+
+    // INITIALIZE ACTIVITY LISTENERS: Mouse movement, clicking, and key typing
+    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart'];
+    events.forEach(event => {
+        window.addEventListener(event, resetInactivityTimer, { passive: true });
+    });
+
+    // HANDLE WAKE/REOPEN: Site refreshes as soon as the window becomes visible
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+            performRefresh();
+        }
+    });
+
+    // START TIMER ON LOAD
+    resetInactivityTimer();
+})();
     </script>
 
    <div style="display:none" id="master-metadata">
