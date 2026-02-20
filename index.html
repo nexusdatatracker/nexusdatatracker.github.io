@@ -753,7 +753,7 @@
                 <span class="settings-label">Custom Wallpaper</span>
                 <div style="display: flex; gap: 0.5rem; flex-direction: column;">
                     <button class="nx-btn" onclick="document.getElementById('wallpaper-input').click()"><i data-lucide="image"></i> Main Wallpaper</button>
-                    <button class="nx-btn" onclick="document.getElementById('lock-wallpaper-input').click()"><i data-lucide="shield"></i> Lock Wallpaper</button>
+                    <button class="nx-btn" onclick="document.getElementById('lock-wallpaper-input').click()"><i data-lucide="shield"></i> Lockscreen Wallpaper</button>
                     <div style="display:flex; gap:0.5rem">
                         <button class="nx-btn" style="flex:1; color:var(--danger)" onclick="clearWallpaper()">Reset Main</button>
                         <button class="nx-btn" style="flex:1; color:var(--danger)" onclick="clearLockWallpaper()">Reset Lock</button>
@@ -1433,7 +1433,7 @@
             state.prefs.lockWallpaper = null;
             applyLockVisuals(true);
             syncState();
-            triggerToast("Lock wallpaper reset.");
+            triggerToast("Lockscreen wallpaper reset.");
         }
 
         function extractAccentColor(img) {
