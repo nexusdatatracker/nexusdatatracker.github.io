@@ -2121,39 +2121,51 @@
             if (topHtml) { topBar.style.display = 'flex'; topBar.innerHTML = topHtml; lucide.createIcons(); } else { topBar.style.display = 'none'; }
         }, 1000);
 
-        /* 
+      /* 
 ================================================================================
-INACTIVITY & AUTO-REFRESH ENGINE
-================================================================================
-- Triggers refresh after 2 minutes of zero activity.
-- Triggers refresh immediately upon tab reopening or device wake.
+NEXUS SECURITY: INACTIVITY, SLEEP & VISIBILITY ENGINE
 ================================================================================
 */
 (function() {
     let inactivityTimer;
-    const TWO_MINUTES = 120000; // 2 minutes in milliseconds
+    let lastHeartbeat = Date.now();
+    const TWO_MINUTES = 120000; 
 
     const performRefresh = () => window.location.reload();
 
+    // 1. INACTIVITY TIMER (Mouse, Key, Touch)
     const resetInactivityTimer = () => {
         clearTimeout(inactivityTimer);
         inactivityTimer = setTimeout(performRefresh, TWO_MINUTES);
     };
 
-    // INITIALIZE ACTIVITY LISTENERS: Mouse movement, clicking, and key typing
-    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart'];
+    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'];
     events.forEach(event => {
         window.addEventListener(event, resetInactivityTimer, { passive: true });
     });
 
-    // HANDLE WAKE/REOPEN: Site refreshes as soon as the window becomes visible
+    // 2. VISIBILITY CHECK (Tab switching / Screen Off-On / Reopening)
     document.addEventListener("visibilitychange", () => {
+        // Refreshes if user leaves tab or if mobile screen turns off and back on
         if (document.visibilityState === "visible") {
             performRefresh();
         }
     });
 
-    // START TIMER ON LOAD
+    // 3. SLEEP/WAKE DETECTION (Heartbeat Check)
+    // Checks every 2 seconds. If execution was frozen (Sleep mode), 
+    // the "gap" will be huge when it resumes.
+    setInterval(() => {
+        const currentTime = Date.now();
+        if (currentTime - lastHeartbeat > 10000) { 
+            // If more than 10 seconds passed since a 2-second check, 
+            // the system definitely went to sleep or froze.
+            performRefresh();
+        }
+        lastHeartbeat = currentTime;
+    }, 2000);
+
+    // INITIALIZE
     resetInactivityTimer();
 })();
     </script>
