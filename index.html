@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="glassmorphism">
 <head>
-    <link rel="icon" type="image/x-icon" href="/favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect width='7' height='9' x='3' y='3' rx='1'/><rect width='7' height='5' x='14' y='3' rx='1'/><rect width='7' height='9' x='14' y='12' rx='1'/><rect width='7' height='5' x='3' y='16' rx='1'/></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus | Data Tracker</title>
@@ -710,7 +710,7 @@
     </div>
 
     <!-- LOCK DIALOG -->
-    <div class="nx-modal-overlay" id="mod-lock" style="display: none; background: #000; z-index: 100000;">
+    <div class="nx-modal-overlay" id="mod-lock" style="display: none; z-index: 100000;">
         <div class="nx-modal" style="text-align: center;">
             <h1 style="font-size: 3rem; font-weight: 950; letter-spacing: -2px; margin-bottom: 2rem;">NEXUS<span style="color: var(--accent-color);">.</span></h1>
             
@@ -1382,25 +1382,28 @@
         }
 
         function applyLockVisuals(isLocked) {
-            const lockView = document.getElementById('mod-lock');
-            
-            if (isLocked) {
-                document.documentElement.style.setProperty('--accent-color', state.prefs.lockAccentColor || state.prefs.accentColor);
-                document.documentElement.style.setProperty('--accent-glow', (state.prefs.lockAccentColor || state.prefs.accentColor) + '55');
-                
-                if (state.prefs.lockWallpaper) {
-                    lockView.style.backgroundImage = `url(${state.prefs.lockWallpaper})`;
-                    lockView.classList.add('has-wallpaper');
-                } else {
-                    lockView.style.background = '#000';
-                    lockView.classList.remove('has-wallpaper');
-                }
-            } else {
-                document.documentElement.style.setProperty('--accent-color', state.prefs.accentColor);
-                document.documentElement.style.setProperty('--accent-glow', state.prefs.accentColor + '55');
-            }
+    const lockView = document.getElementById('mod-lock');
+    
+    if (isLocked) {
+        // Apply lockscreen specific colors
+        document.documentElement.style.setProperty('--accent-color', state.prefs.lockAccentColor || state.prefs.accentColor);
+        document.documentElement.style.setProperty('--accent-glow', (state.prefs.lockAccentColor || state.prefs.accentColor) + '55');
+        
+        if (state.prefs.lockWallpaper) {
+            // Use .background to override any previous solid color settings
+            lockView.style.background = `url(${state.prefs.lockWallpaper})`;
+            lockView.classList.add('has-wallpaper');
+        } else {
+            // Revert to solid black if no wallpaper is set
+            lockView.style.background = '#000';
+            lockView.classList.remove('has-wallpaper');
         }
-
+    } else {
+        // Revert to main dashboard accent colors
+        document.documentElement.style.setProperty('--accent-color', state.prefs.accentColor);
+        document.documentElement.style.setProperty('--accent-glow', state.prefs.accentColor + '55');
+    }
+}
         function clearWallpaper() {
             document.body.style.backgroundImage = '';
             document.body.classList.remove('has-wallpaper');
@@ -2360,8 +2363,6 @@
         MoroniChapters: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
         Architecture: "Tri-Protocol scripture parsing engine enabled."
     </div>
-
-    
 </div>
 </body>
 </html>
