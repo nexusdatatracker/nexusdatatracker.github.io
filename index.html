@@ -1335,36 +1335,51 @@
         const syncState = () => localStorage.setItem('NEXUS_V12_CORE', JSON.stringify(state));
 
         const bootstrapState = () => {
-            const raw = localStorage.getItem('NEXUS_V12_CORE');
-            if (raw) {
-                state = JSON.parse(raw);
-                if (Array.isArray(state.portals)) { state.portals = { 'Default': state.portals }; state.activePortalGroup = 'Default'; }
-                if (!state.activePortalGroup) state.activePortalGroup = 'Default';
-                if (!state.countdowns) state.countdowns = [];
-                if (!state.reminders) state.reminders = [];
-                if (state.topCountdownId === undefined) state.topCountdownId = null;
-                if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true, reminders: true };
-                if (!state.recovery) state.recovery = { question: '', answer: '' };
-                if (!state.prefs.accentColor) state.prefs.accentColor = '#3b82f6';
-                if (!state.prefs.lockAccentColor) state.prefs.lockAccentColor = '#3b82f6';
-                
-                // RESTORE WALLPAPER ON BOOT
-                if (state.prefs.wallpaper) applyWallpaper(state.prefs.wallpaper);
-            }
-            
-            applyThemeUI(state.theme);
-            if (state.prefs.firstRun) {
-                openMod('mod-setup');
-            } else {
-                renderAll();
-                refreshScripture();
-                checkReminders(); // Persistence catcher on load
-                if (state.password) {
-                    applyLockVisuals(true);
-                    openMod('mod-lock');
+    const raw = localStorage.getItem('NEXUS_V12_CORE');
+    if (raw) {
+        state = JSON.parse(raw);
+
+        // --- DATA SANITIZATION: Fixes the 0.1/Crash Bug for existing users ---
+        if (state.reminders && Array.isArray(state.reminders)) {
+            state.reminders.forEach(r => {
+                if (r.freq === 'interval') {
+                    const val = parseInt(r.interval);
+                    // If it's 0.1, NaN, or 0, force it to 1 minute to prevent freeze
+                    if (isNaN(val) || val < 1) {
+                        r.interval = 1;
+                        r.nextTrigger = Date.now() + 60000; 
+                    }
                 }
-            }
-        };
+            });
+        }
+
+        if (Array.isArray(state.portals)) { state.portals = { 'Default': state.portals }; state.activePortalGroup = 'Default'; }
+        if (!state.activePortalGroup) state.activePortalGroup = 'Default';
+        if (!state.countdowns) state.countdowns = [];
+        if (!state.reminders) state.reminders = [];
+        if (state.topCountdownId === undefined) state.topCountdownId = null;
+        if (!state.prefs.vis) state.prefs.vis = { tasks:true, timer:true, habits:true, links:true, notes:true, weather:true, countdowns: true, reminders: true };
+        if (!state.recovery) state.recovery = { question: '', answer: '' };
+        if (!state.prefs.accentColor) state.prefs.accentColor = '#3b82f6';
+        if (!state.prefs.lockAccentColor) state.prefs.lockAccentColor = '#3b82f6';
+        
+        // RESTORE WALLPAPER ON BOOT
+        if (state.prefs.wallpaper) applyWallpaper(state.prefs.wallpaper);
+    }
+    
+    applyThemeUI(state.theme);
+    if (state.prefs.firstRun) {
+        openMod('mod-setup');
+    } else {
+        renderAll();
+        refreshScripture();
+        checkReminders(); // Persistence catcher on load
+        if (state.password) {
+            applyLockVisuals(true);
+            openMod('mod-lock');
+        }
+    }
+};
 
         const openMod = (id) => {
             if (id === 'mod-lock') applyLockVisuals(true);
@@ -1513,28 +1528,41 @@
         }
 
         // --- REMINDERS LOGIC (RECURRING ENGINE) ---
-        function calculateNextTrigger(rem, referenceTime = Date.now()) {
+                function calculateNextTrigger(rem, referenceTime = Date.now()) {
             let next = new Date(rem.baseTime);
             const now = new Date(referenceTime);
             
             if (rem.freq === 'once') return rem.baseTime;
 
-            // Increment trigger until it is in the future
+            // Force minimum 1 minute to prevent division by zero or infinite loops
+            const interval = Math.max(1, parseInt(rem.interval) || 1);
+            
+            if (rem.freq === 'interval') {
+                const ms = interval * 60000;
+                // Instant math: find how many intervals have passed and add one
+                const diff = now.getTime() - next.getTime();
+                if (diff >= 0) {
+                    const intervalsNeeded = Math.floor(diff / ms) + 1;
+                    return next.getTime() + (intervalsNeeded * ms);
+                }
+                return next.getTime();
+            }
+
+            // Loop-based frequencies (safe because the unit of change is at least 1 hour)
             while (next <= now) {
+                const prev = next.getTime();
                 if (rem.freq === 'hourly') next.setHours(next.getHours() + 1);
                 else if (rem.freq === 'daily') next.setDate(next.getDate() + 1);
                 else if (rem.freq === 'weekly') next.setDate(next.getDate() + 7);
                 else if (rem.freq === 'monthly') next.setMonth(next.getMonth() + 1);
                 else if (rem.freq === 'yearly') next.setFullYear(next.getFullYear() + 1);
-                else if (rem.freq === 'interval') next.setMinutes(next.getMinutes() + parseInt(rem.interval));
                 else if (rem.freq === 'weekday') {
                     next.setDate(next.getDate() + 1);
                     while(next.getDay() !== parseInt(rem.day)) { next.setDate(next.getDate() + 1); }
                 }
-                else if (rem.freq === 'dateNoYear') {
-                    next.setFullYear(next.getFullYear() + 1);
-                }
-                else break;
+                else if (rem.freq === 'dateNoYear') { next.setFullYear(next.getFullYear() + 1); }
+                
+                if (next.getTime() <= prev) break; // Emergency exit
             }
             return next.getTime();
         }
