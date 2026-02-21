@@ -1782,9 +1782,12 @@
                                 </div>
                             </div>
 
-                            <div class="habit-button-group">
+                                                        <div class="habit-button-group">
                                  <button class="nx-btn" title="Increment Progress" onclick="incHabit(${i})">
                                     <i data-lucide="plus" size="16"></i>
+                                 </button>
+                                 <button class="nx-btn" title="Reset Streak" onclick="resetHabit(${i})">
+                                    <i data-lucide="rotate-ccw" size="16"></i>
                                  </button>
                                  <button class="nx-btn" title="Rename Streak" onclick="renameHabit(${i})">
                                     <i data-lucide="edit-3" size="16"></i>
@@ -1841,6 +1844,15 @@
                 state.habits.splice(i, 1);
                 renderHabitSection();
                 syncState();
+            }
+        }
+
+                async function resetHabit(i) {
+            if (await confirm(`Reset the streak for "${state.habits[i].title}" back to zero?`)) {
+                state.habits[i].count = 0;
+                renderHabitSection();
+                syncState();
+                triggerToast("Streak reset.");
             }
         }
 
