@@ -1163,7 +1163,7 @@
                             <i data-lucide="${icon}" size="24"></i>
                         </div>
                         <h2 style="margin-bottom: 0.5rem; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px;">Attention</h2>
-                        <p style="margin-bottom: 1.5rem; opacity: 0.6; line-height: 1.6; font-size: 0.9rem;">${message}</p>
+                        <p style="margin-bottom: 1.5rem; opacity: 0.6; line-height: 1.6; font-size: 0.9rem; white-space: pre-wrap;">${message}</p>
                         ${inputField}
                         <div style="display:flex; gap:0.5rem">
                             ${secondaryBtn}
@@ -1557,32 +1557,31 @@
             }
         }
 
-        function renderReminders() {
-            const v = document.getElementById('reminder-view');
-            if(!v) return;
-            v.innerHTML = '';
-            if (state.reminders.length === 0) {
-                v.innerHTML = '<div class="empty-state">No reminders active.</div>';
-            } else {
-                state.reminders.sort((a,b) => a.nextTrigger - b.nextTrigger).forEach(r => {
-                    const row = document.createElement('div');
-                    row.className = `reminder-row ${r.nextTrigger <= Date.now() ? 'past' : ''}`;
-                    row.innerHTML = `
-                        <div>
-                            <p style="font-weight:700; font-size:0.85rem">${r.text}</p>
-                            <p class="rem-meta">${new Date(r.nextTrigger).toLocaleString()}</p>
-                        </div>
-                        <div style="display:flex; gap:0.4rem">
-                            <button class="nx-btn nx-btn-icon" onclick="editReminder('${r.id}')"><i data-lucide="edit-3" size="12"></i></button>
-                            <button class="nx-btn nx-btn-icon" style="color:var(--danger)" onclick="deleteReminder('${r.id}')"><i data-lucide="trash-2" size="12"></i></button>
-                        </div>
-                    `;
-                    v.appendChild(row);
-                });
-            }
-            lucide.createIcons();
-        }
-
+       function renderReminders() {
+    const v = document.getElementById('reminder-view');
+    if(!v) return;
+    v.innerHTML = '';
+    if (state.reminders.length === 0) {
+        v.innerHTML = '<div class="empty-state">No reminders active.</div>';
+    } else {
+        state.reminders.sort((a,b) => a.nextTrigger - b.nextTrigger).forEach(r => {
+            const row = document.createElement('div');
+            row.className = `reminder-row ${r.nextTrigger <= Date.now() ? 'past' : ''}`;
+            row.innerHTML = `
+                <div>
+                    <p style="font-weight:700; font-size:0.85rem; white-space: pre-wrap; line-height: 1.4;">${r.text}</p>
+                    <p class="rem-meta">${new Date(r.nextTrigger).toLocaleString()}</p>
+                </div>
+                <div style="display:flex; gap:0.4rem">
+                    <button class="nx-btn nx-btn-icon" onclick="editReminder('${r.id}')"><i data-lucide="edit-3" size="12"></i></button>
+                    <button class="nx-btn nx-btn-icon" style="color:var(--danger)" onclick="deleteReminder('${r.id}')"><i data-lucide="trash-2" size="12"></i></button>
+                </div>
+            `;
+            v.appendChild(row);
+        });
+    }
+    lucide.createIcons();
+}
         function spawnReminderCreator(id = null) {
             const r = id ? state.reminders.find(x => x.id === id) : null;
             const f = document.getElementById('creator-fields');
