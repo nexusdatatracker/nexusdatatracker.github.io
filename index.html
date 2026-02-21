@@ -1589,7 +1589,8 @@
             document.getElementById('creator-title').innerText = r ? "Modify Reminder" : "New Reminder";
             
             f.innerHTML = `
-                <input type="text" id="rem-text-in" class="nx-input" placeholder="Message" value="${r ? r.text : ''}">
+                <textarea id="rem-text-in" class="nx-input" placeholder="Message..." 
+    style="height: 100px; padding: 10px; resize: none; line-height: 1.4;">${r ? r.text : ''}</textarea>
                 <select id="rem-freq-in" class="nx-input" onchange="toggleRemFields()">
                     <option value="once" ${r?.freq=='once'?'selected':''}>Once (Specific Date/Time)</option>
                     <option value="hourly" ${r?.freq=='hourly'?'selected':''}>Hourly</option>
