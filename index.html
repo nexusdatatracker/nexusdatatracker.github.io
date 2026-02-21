@@ -1701,7 +1701,14 @@
         }
 
         function editReminder(id) { spawnReminderCreator(id); }
-        function deleteReminder(id) { state.reminders = state.reminders.filter(x => x.id !== id); syncState(); renderReminders(); }
+
+        async function deleteReminder(id) { 
+    if (await confirm("Permanently delete this notification?")) {
+        state.reminders = state.reminders.filter(x => x.id !== id); 
+        syncState(); 
+        renderReminders(); 
+    }
+}
 
         // --- TASK CORE (ID-BASED) ---
         function renderTodoSection() {
@@ -1740,10 +1747,12 @@
             }
         }
 
-        function deleteTodo(id) {
-            state.lists[state.activeList] = state.lists[state.activeList].filter(x => x.id !== id);
-            renderTodoSection();
-        }
+        async function deleteTodo(id) {
+    if (await confirm("Permanently remove this task?")) {
+        state.lists[state.activeList] = state.lists[state.activeList].filter(x => x.id !== id);
+        renderTodoSection();
+    }
+}
 
         function spawnTodoCreator() {
             const fields = document.getElementById('creator-fields');
@@ -1928,7 +1937,12 @@
             openMod('mod-creator');
         }
 
-        const delPortal = (i) => { state.portals[state.activePortalGroup].splice(i, 1); renderPortalSection(); };
+       async function delPortal(i) {
+    if (await confirm("Delete this shortcut link?")) {
+        state.portals[state.activePortalGroup].splice(i, 1);
+        renderPortalSection();
+    }
+}
         
         function spawnPortalFolderCreator() {
             const f = document.getElementById('creator-fields');
@@ -2384,7 +2398,13 @@
             lucide.createIcons();
         }
 
-        function deleteCountdown(id) { state.countdowns = state.countdowns.filter(x => x.id !== id); renderCountdowns(); syncState(); }
+        async function deleteCountdown(id) { 
+    if (await confirm("Remove this countdown timer?")) {
+        state.countdowns = state.countdowns.filter(x => x.id !== id); 
+        renderCountdowns(); 
+        syncState(); 
+    }
+}
 
         setInterval(() => {
             const topBar = document.getElementById('top-countdown-display');
