@@ -1654,7 +1654,12 @@
             if(['once', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'].includes(freq)) {
                 container.innerHTML = `<p class="settings-label">Start Time</p><input type="datetime-local" id="rem-time-in" class="nx-input" value="${r ? new Date(r.baseTime).toISOString().slice(0,16) : ''}">`;
             } else if(freq === 'interval') {
-                container.innerHTML = `<input type="number" id="rem-int-in" class="nx-input" placeholder="Minutes between activation" value="${r ? r.interval : ''}">`;
+                container.innerHTML = `<input type="number" id="rem-int-in" class="nx-input" 
+    placeholder="Minutes..." 
+    min="1" 
+    step="1" 
+    oninput="this.value = Math.max(1, Math.floor(this.value)).toString().replace(/[^0-9]/g, '')"
+    value="${r?.interval || 1}">`;
             } else if(freq === 'weekday') {
                 container.innerHTML = `
                     <select id="rem-day-in" class="nx-input">
