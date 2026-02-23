@@ -2419,24 +2419,24 @@
             if (topHtml) { topBar.style.display = 'flex'; topBar.innerHTML = topHtml; lucide.createIcons(); } else { topBar.style.display = 'none'; }
         }, 1000);
 
+// --- SMART REFRESH ENGINE ---
 (function() {
-    let inactivityTimer;
-    let lastHeartbeat = Date.now();
-    const TWO_MINUTES = 120000; 
+    // Record when the page was last loaded
+    const pageLoadTime = Date.now();
+    const REFRESH_THRESHOLD = 120000; // 2 Minutes in milliseconds
 
-    const performRefresh = () => window.location.reload();
-
-    const resetInactivityTimer = () => {
-        clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(performRefresh, TWO_MINUTES);
-    };
-
-    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'];
-    events.forEach(event => {
-        window.addEventListener(event, resetInactivityTimer, { passive: true });
+    document.addEventListener('visibilitychange', () => {
+        // Trigger only when the user returns to the tab
+        if (document.visibilityState === 'visible') {
+            const timeSinceLoad = Date.now() - pageLoadTime;
+            
+            // Check if the 2-minute "timer" has expired since the last load
+            if (timeSinceLoad >= REFRESH_THRESHOLD) {
+                console.log("Nexus: Refresh threshold met. Reloading interface...");
+                window.location.reload();
+            }
+        }
     });
-
-    resetInactivityTimer();
 })();
 
 // --- FEATURE NOTIFICATION ENGINE ---
