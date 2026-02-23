@@ -1345,9 +1345,13 @@
 
         const triggerToast = (msg) => {
     if (!state.activeAlerts) state.activeAlerts = [];
-    state.activeAlerts.push(msg);
-    syncState();
-    processAlertQueue();
+    
+    // PREVENT DUPLICATES: Only add if the message isn't already in the queue
+    if (!state.activeAlerts.includes(msg)) {
+        state.activeAlerts.push(msg);
+        syncState();
+        processAlertQueue();
+    }
 };
 
         // --- MASTER RENDERER ---
@@ -1545,11 +1549,14 @@ async function processAlertQueue() {
     
     state.reminders.forEach(r => {
         if (r.nextTrigger <= now) {
-            // 1. Add to the persistent persistent alert queue
             if (!state.activeAlerts) state.activeAlerts = [];
-            state.activeAlerts.push(r.text); 
             
-            // 2. Update timing logic
+            // PREVENT DUPLICATES: Only push if this exact text isn't already waiting
+            if (!state.activeAlerts.includes(r.text)) {
+                state.activeAlerts.push(r.text); 
+            }
+            
+            // Update timing logic (always update the 'next' time so it doesn't get stuck)
             r.lastTriggered = now;
             r.nextTrigger = calculateNextTrigger(r);
             if (r.freq === 'once') r.expired = true;
@@ -1561,7 +1568,7 @@ async function processAlertQueue() {
         state.reminders = state.reminders.filter(x => !x.expired);
         syncState(); 
         renderReminders();
-        processAlertQueue(); // Trigger the display engine
+        processAlertQueue(); 
     }
 }
 
