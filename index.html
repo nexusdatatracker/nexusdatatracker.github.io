@@ -1344,13 +1344,30 @@
         }
 
         const triggerToast = (msg) => {
+    const container = document.getElementById('nx-toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'nx-toast';
+    toast.innerHTML = `<i data-lucide="info" size="16"></i> ${msg}`;
+    container.appendChild(toast);
+    
+    if (window.lucide) lucide.createIcons();
+
+    // Remove the toast after 3 seconds
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(20px)';
+        setTimeout(() => toast.remove(), 400);
+    }, 3000);
+};
+
+const triggerPersistentAlert = (msg) => {
     if (!state.activeAlerts) state.activeAlerts = [];
     
-    // PREVENT DUPLICATES: Only add if the message isn't already in the queue
+    // Check for duplicates
     if (!state.activeAlerts.includes(msg)) {
         state.activeAlerts.push(msg);
-        syncState();
-        processAlertQueue();
+        syncState(); // Save to LocalStorage
+        processAlertQueue(); // Show banner
     }
 };
 
@@ -1549,14 +1566,9 @@ async function processAlertQueue() {
     
     state.reminders.forEach(r => {
         if (r.nextTrigger <= now) {
-            if (!state.activeAlerts) state.activeAlerts = [];
+            // CALL THE PERSISTENT BANNER HERE
+            triggerPersistentAlert(r.text); 
             
-            // PREVENT DUPLICATES: Only push if this exact text isn't already waiting
-            if (!state.activeAlerts.includes(r.text)) {
-                state.activeAlerts.push(r.text); 
-            }
-            
-            // Update timing logic (always update the 'next' time so it doesn't get stuck)
             r.lastTriggered = now;
             r.nextTrigger = calculateNextTrigger(r);
             if (r.freq === 'once') r.expired = true;
