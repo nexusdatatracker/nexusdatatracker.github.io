@@ -45,6 +45,11 @@
             --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
             --transition-speed: 0.3s;
+
+            /* Visual Filter Variables */
+            --wp-blur: 0px;
+            --wp-bright: 100%;
+            --wp-gray: 0%;
         }
 
         [data-theme="cyberpunk"] {
@@ -632,6 +637,40 @@
             opacity: 0.8; 
         }
 
+        /* FOCUS MODE UI LOGIC */
+        body.focus-active .nx-container > main,
+        body.focus-active .nx-header > *:not(.header-actions),
+        body.focus-active footer {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.98);
+        }
+
+        body.focus-active .nx-container {
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.focus-active #real-time-clock {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8rem;
+            background: none;
+            border: none;
+            text-shadow: 0 0 50px rgba(255,255,255,0.2);
+            z-index: 10000;
+            transition: all 0.8s ease;
+        }
+
+        body.focus-active #weather-node, 
+        body.focus-active #tour-settings,
+        body.focus-active #focus-toggle-btn {
+            opacity: 1; /* Keep relevant UI items visible if needed, but usually hidden */
+        }
+        
+        body.focus-active #weather-node { opacity: 0; }
+
         /* --- WALLPAPER OVERRIDES --- */
         body.has-wallpaper {
             background-size: cover !important;
@@ -646,6 +685,9 @@
             inset: 0;
             background: rgba(0, 0, 0, 0.4);
             z-index: -1;
+            /* Apply active filters here */
+            backdrop-filter: blur(var(--wp-blur)) brightness(var(--wp-bright)) grayscale(var(--wp-gray));
+            transition: backdrop-filter 0.5s ease;
         }
 
         #mod-lock.has-wallpaper {
@@ -672,47 +714,47 @@
         }
 
         /* NOTIFICATION BUBBLE */
-.nx-feature-bubble {
-    position: absolute;
-    top: 45px;
-    right: -10px;
-    background: var(--accent-color);
-    color: white;
-    padding: 0.8rem 1rem;
-    border-radius: 1rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    width: 180px;
-    line-height: 1.4;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    z-index: 1000;
-    display: none;
-    animation: bubbleFloat 2s infinite ease-in-out;
-}
+        .nx-feature-bubble {
+            position: absolute;
+            top: 45px;
+            right: -10px;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.8rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            width: 180px;
+            line-height: 1.4;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+            animation: bubbleFloat 2s infinite ease-in-out;
+        }
 
-.nx-feature-bubble::after {
-    content: '';
-    position: absolute;
-    top: -8px;
-    right: 20px;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--accent-color);
-}
+        .nx-feature-bubble::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: 20px;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid var(--accent-color);
+        }
 
-.nx-bubble-close {
-    position: absolute;
-    top: 5px;
-    right: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    opacity: 0.7;
-}
+        .nx-bubble-close {
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            opacity: 0.7;
+        }
 
-@keyframes bubbleFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
+        @keyframes bubbleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
     </style>
 </head>
 <body>
@@ -792,11 +834,28 @@
             </div>
 
             <div class="settings-sec">
-                <span class="settings-label">Custom Wallpaper</span>
+                <span class="settings-label">Custom Wallpaper & Filters</span>
                 <div style="display: flex; gap: 0.5rem; flex-direction: column;">
                     <button class="nx-btn" onclick="document.getElementById('wallpaper-input').click()"><i data-lucide="image"></i> Main Wallpaper</button>
                     <button class="nx-btn" onclick="document.getElementById('lock-wallpaper-input').click()"><i data-lucide="shield"></i> Lockscreen Wallpaper</button>
-                    <div style="display:flex; gap:0.5rem">
+                    
+                    <!-- Live Wallpaper Filters -->
+                    <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.8rem;">
+                        <div class="toggle-row">
+                            <span style="font-size: 0.75rem; opacity: 0.6;">Blur Amount</span>
+                            <input type="range" id="filter-blur" class="range-styled" min="0" max="25" step="1" oninput="updateInterfaceConfig()" style="width: 120px;">
+                        </div>
+                        <div class="toggle-row">
+                            <span style="font-size: 0.75rem; opacity: 0.6;">Brightness</span>
+                            <input type="range" id="filter-brightness" class="range-styled" min="20" max="180" step="5" oninput="updateInterfaceConfig()" style="width: 120px;">
+                        </div>
+                        <div class="toggle-row">
+                            <span style="font-size: 0.75rem; opacity: 0.6;">Grayscale</span>
+                            <input type="range" id="filter-grayscale" class="range-styled" min="0" max="100" step="10" oninput="updateInterfaceConfig()" style="width: 120px;">
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:0.5rem; margin-top: 0.5rem;">
                         <button class="nx-btn" style="flex:1; color:var(--danger)" onclick="clearWallpaper()">Reset Main</button>
                         <button class="nx-btn" style="flex:1; color:var(--danger)" onclick="clearLockWallpaper()">Reset Lock</button>
                     </div>
@@ -899,16 +958,21 @@
                 </div>
                 <!-- TOP COUNTDOWN display -->
                 <div id="top-countdown-display" class="top-countdown-bar"></div>
-                <!-- SETTINGS -->
-                <div style="position: relative;">
-    <div id="feature-bubble" class="nx-feature-bubble">
-        <span class="nx-bubble-close" onclick="dismissFeatureBubble()">&times;</span>
-        New features added! Check settings to see them all.
-    </div>
-    <button class="nx-btn nx-btn-icon" id="tour-settings" onclick="openMod('mod-theme')">
-        <i data-lucide="settings"></i>
-    </button>
-</div>
+                <!-- FOCUS & SETTINGS -->
+                <div style="display: flex; gap: 0.6rem; align-items: center; position: relative;">
+                    <!-- Focus Mode Toggle (New) -->
+                    <button class="nx-btn nx-btn-icon" id="focus-toggle-btn" title="Focus Mode" onclick="toggleFocusMode()">
+                        <i data-lucide="eye-off"></i>
+                    </button>
+
+                    <div id="feature-bubble" class="nx-feature-bubble">
+                        <span class="nx-bubble-close" onclick="dismissFeatureBubble()">&times;</span>
+                        New features added! Check settings to see them all.
+                    </div>
+                    <button class="nx-btn nx-btn-icon" id="tour-settings" onclick="openMod('mod-theme')">
+                        <i data-lucide="settings"></i>
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -1276,12 +1340,14 @@
                 accentColor: '#3b82f6',
                 lockAccentColor: '#3b82f6',
                 wallpaper: null,
-                lockWallpaper: null
+                lockWallpaper: null,
+                filters: { blur: 0, brightness: 100, grayscale: 0 }
             },
             countdowns: [],
             topCountdownId: null,
             reminders: [],
-            activeAlerts: []
+            activeAlerts: [],
+            focusActive: false
         };
 
         const syncState = () => localStorage.setItem('NEXUS_V12_CORE', JSON.stringify(state));
@@ -1314,6 +1380,7 @@
         if (!state.recovery) state.recovery = { question: '', answer: '' };
         if (!state.prefs.accentColor) state.prefs.accentColor = '#3b82f6';
         if (!state.prefs.lockAccentColor) state.prefs.lockAccentColor = '#3b82f6';
+        if (!state.prefs.filters) state.prefs.filters = { blur: 0, brightness: 100, grayscale: 0 };
         
         // RESTORE WALLPAPER ON BOOT
         if (state.prefs.wallpaper) applyWallpaper(state.prefs.wallpaper);
@@ -2267,6 +2334,7 @@ async function processAlertQueue() {
             startNexusEnvironmentalEngine();
             setupLinkProtocol();
             setInterval(checkReminders, 1000); 
+            initFeatureNotification();
         };
 
         function updateInterfaceConfig(init = false) {
@@ -2278,7 +2346,10 @@ async function processAlertQueue() {
                 lds: document.getElementById('set-lds'),
                 pass: document.getElementById('set-password'),
                 recoveryq: document.getElementById('set-recovery-q'),
-                recoverya: document.getElementById('set-recovery-a')
+                recoverya: document.getElementById('set-recovery-a'),
+                blur: document.getElementById('filter-blur'),
+                bright: document.getElementById('filter-brightness'),
+                gray: document.getElementById('filter-grayscale')
             };
 
             if(!init) {
@@ -2290,6 +2361,13 @@ async function processAlertQueue() {
                 if (ui.pass) state.password = ui.pass.value;
                 if (ui.recoveryq) state.recovery.question = ui.recoveryq.value;
                 if (ui.recoverya) state.recovery.answer = ui.recoverya.value;
+
+                // Capture filter sliders
+                state.prefs.filters = {
+                    blur: ui.blur.value,
+                    brightness: ui.bright.value,
+                    grayscale: ui.gray.value
+                };
 
                 state.prefs.vis.tasks = document.getElementById('vis-tasks').checked;
                 state.prefs.vis.timer = document.getElementById('vis-timer').checked;
@@ -2309,6 +2387,13 @@ async function processAlertQueue() {
                 if (ui.recoveryq) ui.recoveryq.value = state.recovery?.question || '';
                 if (ui.recoverya) ui.recoverya.value = state.recovery?.answer || '';
 
+                // Restore filter sliders
+                if (state.prefs.filters) {
+                    ui.blur.value = state.prefs.filters.blur;
+                    ui.bright.value = state.prefs.filters.brightness;
+                    ui.gray.value = state.prefs.filters.grayscale;
+                }
+
                 document.getElementById('vis-tasks').checked = state.prefs.vis.tasks;
                 document.getElementById('vis-timer').checked = state.prefs.vis.timer;
                 document.getElementById('vis-habits').checked = state.prefs.vis.habits;
@@ -2318,6 +2403,12 @@ async function processAlertQueue() {
                 document.getElementById('vis-weather').checked = state.prefs.vis.weather;
                 document.getElementById('vis-reminders').checked = state.prefs.vis.reminders;
             }
+
+            // Apply filters to CSS variables
+            const filters = state.prefs.filters || { blur: 0, brightness: 100, grayscale: 0 };
+            document.documentElement.style.setProperty('--wp-blur', filters.blur + 'px');
+            document.documentElement.style.setProperty('--wp-bright', filters.brightness + '%');
+            document.documentElement.style.setProperty('--wp-gray', filters.grayscale + '%');
 
             document.documentElement.style.setProperty('--accent-color', state.prefs.accentColor);
             document.documentElement.style.setProperty('--accent-glow', state.prefs.accentColor + '55');
@@ -2459,9 +2550,38 @@ function dismissFeatureBubble() {
     localStorage.setItem('NEXUS_BUBBLE_DISMISSED', 'true');
 }
 
-// Ensure this is called inside your window.onload or bootstrapState
-// Place this line inside your window.onload function:
-initFeatureNotification();
+// FOCUS MODE TOGGLE LOGIC
+function toggleFocusMode() {
+    state.focusActive = !state.focusActive;
+    document.body.classList.toggle('focus-active', state.focusActive);
+    
+    // Icon update
+    const btn = document.getElementById('focus-toggle-btn');
+    if (state.focusActive) {
+        btn.innerHTML = '<i data-lucide="eye"></i>';
+        triggerToast("Focus Mode engaged.");
+    } else {
+        btn.innerHTML = '<i data-lucide="eye-off"></i>';
+        triggerToast("Focus Mode disengaged.");
+    }
+    if (window.lucide) lucide.createIcons();
+}
+
+// GLOBAL KEYBOARD LISTENER
+window.addEventListener('keydown', (e) => {
+    const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable;
+    
+    // Key: F toggles Focus Mode
+    if (e.key.toLowerCase() === 'f' && !isInput) {
+        toggleFocusMode();
+    }
+    
+    // Key: Escape closes modals
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.nx-modal-overlay').forEach(m => m.style.display = 'none');
+    }
+});
+
     </script>
 
    <div style="display:none" id="master-metadata">
